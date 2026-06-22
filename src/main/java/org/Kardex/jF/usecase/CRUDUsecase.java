@@ -7,4 +7,5 @@ public interface CRUDUsecase<T> {
     List<T> listar();
     boolean actualizar(T obj);
     boolean eliminar(Integer id);
+    
 }

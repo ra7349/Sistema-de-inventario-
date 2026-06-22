@@ -4,18 +4,20 @@ public class Servicio {
 
     private Integer idServicio;
     private String codigo;
-    private String nombre;
     private String descripcion;
     private Double precio;
     private String estado;
     
     
-	public Servicio(Integer idServicio, String codigo, String nombre, String descripcion, Double precio,
+    
+	public Servicio() {
+		super();
+	}
+	public Servicio(Integer idServicio, String codigo, String descripcion, Double precio,
 			String estado) {
 		super();
 		this.idServicio = idServicio;
 		this.codigo = codigo;
-		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.precio = precio;
 		this.estado = estado;
@@ -31,12 +33,6 @@ public class Servicio {
 	}
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
-	}
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
 	}
 	public String getDescripcion() {
 		return descripcion;
