@@ -40,6 +40,7 @@ public class FormularioEquipo extends JDialog {
 
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
+        asignarSiguienteCodigo();
     }
 
     private JPanel crearPanel() {
@@ -52,6 +53,7 @@ public class FormularioEquipo extends JDialog {
         for (JTextField field : new JTextField[]{txtCodigo, txtMarca, txtModelo}) {
             UiStyle.styleField(field);
         }
+        txtCodigo.setEditable(false);
         UiStyle.styleCombo(cbTipo);
         UiStyle.styleCombo(cbEstado);
         UiStyle.styleCombo(cbCliente);
@@ -108,9 +110,7 @@ public class FormularioEquipo extends JDialog {
     }
 
     private void guardar() {
-        if (txtCodigo.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El código es obligatorio."); return;
-        }
+        if (txtCodigo.getText().trim().isEmpty()) asignarSiguienteCodigo();
         if (clientes.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No hay clientes registrados."); return;
         }
@@ -133,9 +133,14 @@ public class FormularioEquipo extends JDialog {
     }
 
     private void limpiar() {
-        txtCodigo.setText(""); txtMarca.setText(""); txtModelo.setText("");
+        txtMarca.setText(""); txtModelo.setText("");
         txtProblema.setText(""); cbTipo.setSelectedIndex(0);
         cbEstado.setSelectedIndex(0); cbCliente.setSelectedIndex(0);
-        txtCodigo.requestFocus();
+        asignarSiguienteCodigo();
+        txtMarca.requestFocus();
+    }
+
+    private void asignarSiguienteCodigo() {
+        txtCodigo.setText(daoE.generarSiguienteCodigo());
     }
 }

@@ -28,6 +28,7 @@ public class FormularioCliente extends JDialog {
         setLayout(new BorderLayout(0, 10));
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
+        asignarSiguienteCodigo();
     }
 
     private JPanel crearPanel() {
@@ -43,6 +44,7 @@ public class FormularioCliente extends JDialog {
         for (JTextField field : new JTextField[]{txtCodigo, txtNombre, txtApellido, txtTelefono, txtCorreo, txtDireccion, txtRuc}) {
             UiStyle.styleField(field);
         }
+        txtCodigo.setEditable(false);
         UiStyle.styleCombo(cbTipo);
         return p;
     }
@@ -60,10 +62,11 @@ public class FormularioCliente extends JDialog {
     }
 
     private void guardar() {
-        if (txtCodigo.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Código y Nombre son obligatorios.");
+        if (txtNombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio.");
             return;
         }
+        if (txtCodigo.getText().trim().isEmpty()) asignarSiguienteCodigo();
         Cliente c = new Cliente();
         c.setCodigo(txtCodigo.getText().trim());
         c.setNombre(txtNombre.getText().trim());
@@ -92,9 +95,14 @@ public class FormularioCliente extends JDialog {
     }
 
     private void limpiar() {
-        txtCodigo.setText(""); txtNombre.setText(""); txtApellido.setText("");
+        txtNombre.setText(""); txtApellido.setText("");
         txtTelefono.setText(""); txtCorreo.setText(""); txtDireccion.setText("");
         txtRuc.setText(""); cbTipo.setSelectedIndex(0);
-        txtCodigo.requestFocus();
+        asignarSiguienteCodigo();
+        txtNombre.requestFocus();
+    }
+
+    private void asignarSiguienteCodigo() {
+        txtCodigo.setText(dao.generarSiguienteCodigo());
     }
 }
