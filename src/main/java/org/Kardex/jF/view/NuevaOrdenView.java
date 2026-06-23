@@ -38,7 +38,7 @@ public class NuevaOrdenView extends JFrame {
 
 	public NuevaOrdenView() {
 		setTitle("Gestión de Órdenes");
-		setSize(800, 550); // ✅ MEJORA 3: Más ancho para que quepa la tabla al lado o abajo
+		setSize(1050, 550); // Más ancho para que la tabla de la derecha se estire en el eje X
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JPanel panelPrincipal = new JPanel(new BorderLayout(15, 15));
@@ -84,8 +84,10 @@ public class NuevaOrdenView extends JFrame {
 	        };
 	        tabla = new JTable(modelo);
 	        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	        tabla.setFillsViewportHeight(true);
+	        tabla.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 	        JScrollPane scrollTabla = new JScrollPane(tabla);
-	        scrollTabla.setPreferredSize(new Dimension(480, 150));
+	        scrollTabla.setPreferredSize(new Dimension(650, 150));
 
 		// ✅ CORRECCIÓN 6: La tabla va en el CENTER para que se expanda profesionalmente
 		panelPrincipal.add(scrollTabla, BorderLayout.CENTER);
@@ -120,6 +122,7 @@ public class NuevaOrdenView extends JFrame {
 		    }
 		});
 		btnAplicarServicio.addActionListener(e -> aplicarServicioCliente());
+		btnActualizarEstado.addActionListener(e -> actualizarEstadoSeleccionado());
 		btnGuardar.addActionListener(e -> agregarOrdenATabla());
 		add(panelPrincipal);
 		setLocationRelativeTo(null);
@@ -165,6 +168,31 @@ public class NuevaOrdenView extends JFrame {
 	        JOptionPane.showMessageDialog(this, "Servicio aplicado al cliente para facturación.");
 	    } else {
 	        JOptionPane.showMessageDialog(this, "No se pudo aplicar el servicio al cliente.");
+	    }
+	}
+
+	private void actualizarEstadoSeleccionado() {
+	    int fila = tabla.getSelectedRow();
+	    if (fila == -1) {
+	        JOptionPane.showMessageDialog(this, "Seleccione una orden de la tabla.");
+	        return;
+	    }
+
+	    int filaModelo = tabla.convertRowIndexToModel(fila);
+	    String numeroOrden = String.valueOf(modelo.getValueAt(filaModelo, 0));
+	    String estadoActual = String.valueOf(modelo.getValueAt(filaModelo, 5));
+	    String nuevoEstado = String.valueOf(comboEstado.getSelectedItem());
+
+	    if (nuevoEstado.equals(estadoActual)) {
+	        JOptionPane.showMessageDialog(this, "La orden ya tiene el estado seleccionado.");
+	        return;
+	    }
+
+	    if (clienteServicioDao.actualizarEstado(numeroOrden, nuevoEstado)) {
+	        modelo.setValueAt(nuevoEstado, filaModelo, 5);
+	        JOptionPane.showMessageDialog(this, "Estado actualizado a: " + nuevoEstado);
+	    } else {
+	        JOptionPane.showMessageDialog(this, "No se pudo actualizar el estado en la base de datos.");
 	    }
 	}
 
