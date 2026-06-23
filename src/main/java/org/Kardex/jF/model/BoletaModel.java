@@ -15,6 +15,9 @@ import org.Kardex.jF.persistence.ConexionRepository;
 public class BoletaModel {
 
     public record DetallePendiente(int idClienteServicio, String descripcion, double precio) {}
+    public record VentaHistorial(int idBoleta, String numero, String tipoComprobante, int idCliente,
+            String cliente, String dniRuc, String metodoPago, LocalDateTime fecha, double subtotal,
+            double igv, double total) {}
 
     public BoletaModel() {
         crearTablasSiNoExisten();
@@ -56,6 +59,44 @@ public class BoletaModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<VentaHistorial> listarHistorialVentas(Integer idCliente) {
+        List<VentaHistorial> ventas = new ArrayList<>();
+        String sql = """
+            SELECT b.id_boleta, b.numero, b.tipo_comprobante, b.id_cliente,
+                   TRIM(c.nombre || ' ' || COALESCE(c.apellido, '')) AS cliente,
+                   b.dni_ruc, b.metodo_pago, b.fecha, b.subtotal, b.igv, b.total
+            FROM boleta b
+            JOIN cliente c ON b.id_cliente = c.id_cliente
+            """
+            + (idCliente == null ? "" : " WHERE b.id_cliente = ?")
+            + " ORDER BY b.fecha DESC, b.id_boleta DESC";
+        try (Connection cn = ConexionRepository.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+            if (idCliente != null) {
+                ps.setInt(1, idCliente);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ventas.add(new VentaHistorial(
+                            rs.getInt("id_boleta"),
+                            rs.getString("numero"),
+                            rs.getString("tipo_comprobante"),
+                            rs.getInt("id_cliente"),
+                            rs.getString("cliente"),
+                            rs.getString("dni_ruc"),
+                            rs.getString("metodo_pago"),
+                            rs.getTimestamp("fecha").toLocalDateTime(),
+                            rs.getDouble("subtotal"),
+                            rs.getDouble("igv"),
+                            rs.getDouble("total")));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ventas;
     }
 
     public List<DetallePendiente> listarServiciosPendientes(int idCliente) {
