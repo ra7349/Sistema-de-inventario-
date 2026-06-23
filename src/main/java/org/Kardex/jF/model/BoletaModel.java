@@ -19,47 +19,6 @@ public class BoletaModel {
             String cliente, String dniRuc, String metodoPago, LocalDateTime fecha, double subtotal,
             double igv, double total) {}
 
-    public BoletaModel() {
-        crearTablasSiNoExisten();
-    }
-
-    private void crearTablasSiNoExisten() {
-        String sqlBoleta = """
-            CREATE TABLE IF NOT EXISTS boleta (
-                id_boleta SERIAL PRIMARY KEY,
-                numero VARCHAR(30) NOT NULL UNIQUE,
-                tipo_comprobante VARCHAR(20) NOT NULL,
-                id_cliente INTEGER NOT NULL REFERENCES cliente(id_cliente),
-                dni_ruc VARCHAR(20),
-                metodo_pago VARCHAR(40) NOT NULL,
-                fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                subtotal NUMERIC(10, 2) NOT NULL DEFAULT 0,
-                igv NUMERIC(10, 2) NOT NULL DEFAULT 0,
-                total NUMERIC(10, 2) NOT NULL DEFAULT 0,
-                estado VARCHAR(20) NOT NULL DEFAULT 'Pagado'
-            )
-            """;
-        String sqlDetalle = """
-            CREATE TABLE IF NOT EXISTS boleta_detalle (
-                id_boleta_detalle SERIAL PRIMARY KEY,
-                id_boleta INTEGER NOT NULL REFERENCES boleta(id_boleta) ON DELETE CASCADE,
-                tipo_item VARCHAR(20) NOT NULL,
-                descripcion TEXT NOT NULL,
-                cantidad INTEGER NOT NULL DEFAULT 1,
-                precio_unitario NUMERIC(10, 2) NOT NULL DEFAULT 0,
-                importe NUMERIC(10, 2) NOT NULL DEFAULT 0,
-                id_cliente_servicio INTEGER REFERENCES cliente_servicio(id_cliente_servicio),
-                id_repuesto INTEGER REFERENCES repuesto(id_repuesto)
-            )
-            """;
-        try (Connection cn = ConexionRepository.getConexion();
-             Statement st = cn.createStatement()) {
-            st.execute(sqlBoleta);
-            st.execute(sqlDetalle);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public List<VentaHistorial> listarHistorialVentas(Integer idCliente) {
         List<VentaHistorial> ventas = new ArrayList<>();
@@ -219,13 +178,14 @@ public class BoletaModel {
                     psStock.setInt(1, cantidad);
                     psStock.setInt(2, idReferencia);
                     psStock.setInt(3, cantidad);
-                    psStock.addBatch();
+                    if (psStock.executeUpdate() == 0) {
+                        throw new IllegalStateException("Stock insuficiente para el repuesto ID " + idReferencia);
+                    }
                 }
                 psDetalle.addBatch();
             }
             psDetalle.executeBatch();
             psFacturar.executeBatch();
-            psStock.executeBatch();
         }
     }
 

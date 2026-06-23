@@ -175,9 +175,16 @@ public class RepuestosView extends JFrame {
             r.setNombre(nombre);
             r.setMarca(campoMarca.getText().trim());
             r.setCategoria(comboCategoria.getSelectedItem().toString());
-            r.setStock(Integer.parseInt(campoStock.getText().trim()));
-            r.setPrecioCompra(Double.parseDouble(campoPrecioCompra.getText().trim()));
-            r.setPrecioVenta(Double.parseDouble(campoPrecioVenta.getText().trim()));
+            int stock = Integer.parseInt(campoStock.getText().trim());
+            double precioCompra = Double.parseDouble(campoPrecioCompra.getText().trim());
+            double precioVenta = Double.parseDouble(campoPrecioVenta.getText().trim());
+            if (stock < 0 || precioCompra < 0 || precioVenta < 0) {
+                JOptionPane.showMessageDialog(this, "Stock y precios no pueden ser negativos.");
+                return null;
+            }
+            r.setStock(stock);
+            r.setPrecioCompra(precioCompra);
+            r.setPrecioVenta(precioVenta);
             r.setEstado(comboEstado.getSelectedItem().toString());
             return r;
         } catch (NumberFormatException ex) {

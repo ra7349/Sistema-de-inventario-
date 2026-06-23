@@ -10,28 +10,6 @@ import org.Kardex.jF.persistence.ConexionRepository;
 
 public class MovimientoInventarioModel {
 
-    public MovimientoInventarioModel() {
-        crearTablaSiNoExiste();
-    }
-
-    public void crearTablaSiNoExiste() {
-        String sql = """
-            CREATE TABLE IF NOT EXISTS movimiento_inventario (
-                id_movimiento SERIAL PRIMARY KEY,
-                id_repuesto INTEGER NOT NULL REFERENCES repuesto(id_repuesto),
-                tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('Entrada', 'Salida')),
-                cantidad INTEGER NOT NULL CHECK (cantidad > 0),
-                motivo VARCHAR(120) NOT NULL,
-                fecha DATE NOT NULL DEFAULT CURRENT_DATE
-            )
-            """;
-        try (Connection cn = ConexionRepository.getConexion();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public boolean registrar(MovimientoInventario movimiento) {
         String insertar = """

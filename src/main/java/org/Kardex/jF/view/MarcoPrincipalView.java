@@ -67,7 +67,7 @@ public class MarcoPrincipalView extends JFrame {
         menuEquipos.add(itemListarEquipos);
 
         JMenu menuServicios = construirMenu("Servicios");
-        JMenuItem itemGestionarServicio = construirItem("GestionarServicio");
+        JMenuItem itemGestionarServicio = construirItem("Gestionar servicios");
         menuServicios.add(itemGestionarServicio);
         
         JMenu menuOrdenes = construirMenu("Órdenes de Servicio");
@@ -90,8 +90,8 @@ public class MarcoPrincipalView extends JFrame {
         menuFacturacion.add(itemHistorialVentas);
 
         JMenu menuReportes = construirMenu("Reportes");
-        JMenuItem itemGenerarRportes   = construirItem("Generar Reportes");
-        menuReportes.add(itemGenerarRportes);
+        JMenuItem itemGenerarReportes   = construirItem("Generar Reportes");
+        menuReportes.add(itemGenerarReportes);
       
 
         JMenu menuAyuda = construirMenu("Ayuda");
@@ -131,7 +131,7 @@ public class MarcoPrincipalView extends JFrame {
         itemGenerarBoleta.addActionListener(e -> new GenerarBoletaView().setVisible(true));
         itemHistorialVentas.addActionListener(e -> new HistorialVentasView().setVisible(true));
         
-        itemGenerarRportes.addActionListener(e -> new ReporteView().setVisible(true));
+        itemGenerarReportes.addActionListener(e -> new ReporteView().setVisible(true));
         
         itemAcercaDe.addActionListener(e -> JOptionPane.showMessageDialog(this,
                 "JF Technology & Services\nSistema de Soporte Técnico v1.0\n2026",

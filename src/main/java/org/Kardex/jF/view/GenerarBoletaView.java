@@ -181,12 +181,28 @@ public class GenerarBoletaView extends JFrame {
                 JOptionPane.showMessageDialog(this, "La cantidad debe ser mayor a cero.");
                 return;
             }
+            int cantidadEnDetalle = cantidadActualEnDetalle(repuesto.getId());
+            if (repuesto.getStock() == null || cantidadEnDetalle + cantidad > repuesto.getStock()) {
+                JOptionPane.showMessageDialog(this, "Stock insuficiente. Disponible: " + (repuesto.getStock() == null ? 0 : repuesto.getStock()));
+                return;
+            }
             double precio = repuesto.getPrecioVenta();
             modeloDetalle.addRow(new Object[]{"REPUESTO", repuesto.toString(), cantidad, formatearSoles(precio), formatearSoles(cantidad * precio), repuesto.getId()});
             actualizarTotales();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Cantidad debe ser numérica.");
         }
+    }
+
+    private int cantidadActualEnDetalle(String idRepuesto) {
+        int total = 0;
+        for (int i = 0; i < modeloDetalle.getRowCount(); i++) {
+            if ("REPUESTO".equals(modeloDetalle.getValueAt(i, 0))
+                    && idRepuesto.equals(String.valueOf(modeloDetalle.getValueAt(i, 5)))) {
+                total += Integer.parseInt(String.valueOf(modeloDetalle.getValueAt(i, 2)));
+            }
+        }
+        return total;
     }
 
     private void quitarItem() {
@@ -221,7 +237,7 @@ public class GenerarBoletaView extends JFrame {
                 Integer.parseInt(cliente.getId()), campoDniRuc.getText(), String.valueOf(comboMetodoPago.getSelectedItem()),
                 parseSoles(lblSubtotal.getText()), parseSoles(lblIgv.getText()), parseSoles(lblTotal.getText()), modeloDetalle);
         if (guardado) {
-            JOptionPane.showMessageDialog(this, "Boleta registrada correctamente en SQL.");
+            JOptionPane.showMessageDialog(this, "Boleta registrada correctamente.");
             prepararNuevaBoleta();
         } else {
             JOptionPane.showMessageDialog(this, "No se pudo guardar la boleta.");

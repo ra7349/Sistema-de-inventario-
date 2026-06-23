@@ -60,10 +60,19 @@ public class FormularioProducto extends JDialog {
         prod.setCodigo(txtCodigo.getText().trim());
         prod.setNombre(txtNombre.getText().trim());
         prod.setDescripcion(txtDescripcion.getText().trim());
-        try { prod.setPrecio(Double.parseDouble(txtPrecio.getText().trim())); }
-        catch (NumberFormatException ex) { prod.setPrecio(0); }
-        try { prod.setStock(Integer.parseInt(txtStock.getText().trim())); }
-        catch (NumberFormatException ex) { prod.setStock(0); }
+        try {
+            double precio = Double.parseDouble(txtPrecio.getText().trim());
+            int stock = Integer.parseInt(txtStock.getText().trim());
+            if (precio < 0 || stock < 0) {
+                JOptionPane.showMessageDialog(this, "Precio y stock no pueden ser negativos.");
+                return;
+            }
+            prod.setPrecio(precio);
+            prod.setStock(stock);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Precio y stock deben ser numéricos.");
+            return;
+        }
         prod.setCategoria((String) cbCategoria.getSelectedItem());
         if (dao.insertar(prod)) {
             JOptionPane.showMessageDialog(this, "Producto registrado.");
