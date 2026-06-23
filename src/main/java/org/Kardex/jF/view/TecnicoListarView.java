@@ -18,7 +18,8 @@ public class TecnicoListarView extends JFrame {
         setSize(850, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        getContentPane().setBackground(UiStyle.BACKGROUND);
+        setLayout(new BorderLayout(0, 10));
 
         modelo = new DefaultTableModel(
             new String[]{"ID","Código","Nombre","Apellido","Teléfono","Correo","Especialidad"}, 0) {
@@ -26,11 +27,13 @@ public class TecnicoListarView extends JFrame {
         };
         tabla = new JTable(modelo);
         tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        UiStyle.styleTable(tabla);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        JPanel panelBotones = new JPanel();
-        JButton btnEliminar  = new JButton("Eliminar");
-        JButton btnRefrescar = new JButton("Refrescar");
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 12));
+        panelBotones.setBackground(UiStyle.BACKGROUND);
+        JButton btnEliminar  = UiStyle.dangerButton("Eliminar");
+        JButton btnRefrescar = UiStyle.secondaryButton("Refrescar");
         panelBotones.add(btnRefrescar);
         panelBotones.add(btnEliminar);
         add(panelBotones, BorderLayout.SOUTH);

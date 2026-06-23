@@ -22,28 +22,31 @@ public class FormularioTecnico extends JDialog {
         super(parent, "Registrar Técnico", true);
         setSize(400, 340);
         setLocationRelativeTo(parent);
-        setLayout(new BorderLayout());
+        getContentPane().setBackground(UiStyle.BACKGROUND);
+        setLayout(new BorderLayout(0, 10));
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
     }
 
     private JPanel crearPanel() {
-        JPanel p = new JPanel(new GridLayout(6, 2, 10, 8));
-        p.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
-        p.add(new JLabel("Código *:")); p.add(txtCodigo);
-        p.add(new JLabel("Nombres *:")); p.add(txtNombre);
-        p.add(new JLabel("Apellidos *:")); p.add(txtApellido);
-        p.add(new JLabel("Teléfono:")); p.add(txtTelefono);
-        p.add(new JLabel("Correo:")); p.add(txtCorreo);
-        p.add(new JLabel("Especialidad:")); p.add(txtEspecialidad);
+        JPanel p = UiStyle.cardPanel(new GridLayout(6, 2, 10, 8));
+        p.add(UiStyle.label("Código *:")); p.add(txtCodigo);
+        p.add(UiStyle.label("Nombres *:")); p.add(txtNombre);
+        p.add(UiStyle.label("Apellidos *:")); p.add(txtApellido);
+        p.add(UiStyle.label("Teléfono:")); p.add(txtTelefono);
+        p.add(UiStyle.label("Correo:")); p.add(txtCorreo);
+        p.add(UiStyle.label("Especialidad:")); p.add(txtEspecialidad);
+        for (JTextField field : new JTextField[]{txtCodigo, txtNombre, txtApellido, txtTelefono, txtCorreo, txtEspecialidad}) {
+            UiStyle.styleField(field);
+        }
         return p;
     }
 
     private JPanel crearBotones() {
-        JPanel p = new JPanel(new GridLayout(1, 2, 8, 0));
-        p.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
-        JButton btnGuardar  = new JButton("Guardar");
-        JButton btnCancelar = new JButton("Limpiar");
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 12));
+        p.setBackground(UiStyle.BACKGROUND);
+        JButton btnGuardar  = UiStyle.primaryButton("Guardar");
+        JButton btnCancelar = UiStyle.secondaryButton("Limpiar");
         btnGuardar .addActionListener(e -> guardar());
         btnCancelar.addActionListener(e -> limpiar());
         p.add(btnCancelar);
