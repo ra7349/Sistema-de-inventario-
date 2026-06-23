@@ -14,7 +14,7 @@ public class EquipoListarView extends JFrame {
     private DefaultTableModel modelo;
     private JTable tabla;
     private TableRowSorter<DefaultTableModel> sorter;
-    private JTextField txtBuscar = new JTextField(24);
+    private JTextField txtBuscar = new JTextField(16);
     private EquipoModel dao = new EquipoModel();
 
     public EquipoListarView() {
@@ -22,7 +22,8 @@ public class EquipoListarView extends JFrame {
         setSize(1000, 420);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        getContentPane().setBackground(UiStyle.BACKGROUND);
+        setLayout(new BorderLayout(0, 10));
 
         modelo = new DefaultTableModel(
             new String[]{"ID","Código","Marca","Modelo","Problema / Falla","Tipo","Estado","Fecha Ingreso","Cliente"}, 0) {
@@ -32,22 +33,26 @@ public class EquipoListarView extends JFrame {
         sorter = new TableRowSorter<>(modelo);
         tabla.setRowSorter(sorter);
         tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tabla.setRowHeight(24);
+        UiStyle.styleTable(tabla);
         tabla.getColumnModel().getColumn(4).setPreferredWidth(220);
         tabla.getColumnModel().getColumn(8).setPreferredWidth(170);
 
         JPanel panelFiltro = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelFiltro.setBorder(BorderFactory.createEmptyBorder(8, 8, 0, 8));
-        panelFiltro.add(new JLabel("Buscar equipo:"));
-        txtBuscar.setToolTipText("Filtra por código, marca, modelo, problema, tipo, estado, fecha o cliente.");
+        panelFiltro.setBackground(UiStyle.BACKGROUND);
+        panelFiltro.setBorder(BorderFactory.createEmptyBorder(12, 12, 0, 12));
+        panelFiltro.add(UiStyle.label("Buscar equipo:"));
+        UiStyle.styleField(txtBuscar);
+        txtBuscar.setPreferredSize(new Dimension(190, 34));
+        txtBuscar.setToolTipText("Ingresa palabras clave como mantenimiento, actualización, reparación, marca, modelo o cliente.");
         panelFiltro.add(txtBuscar);
         add(panelFiltro, BorderLayout.NORTH);
 
         add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        JPanel panelBotones = new JPanel();
-        JButton btnEliminar  = new JButton("Eliminar");
-        JButton btnRefrescar = new JButton("Refrescar");
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 12));
+        panelBotones.setBackground(UiStyle.BACKGROUND);
+        JButton btnEliminar  = UiStyle.dangerButton("Eliminar");
+        JButton btnRefrescar = UiStyle.secondaryButton("Refrescar");
         panelBotones.add(btnRefrescar);
         panelBotones.add(btnEliminar);
         add(panelBotones, BorderLayout.SOUTH);

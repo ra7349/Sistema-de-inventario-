@@ -27,9 +27,10 @@ public class FormularioEquipo extends JDialog {
 
     public FormularioEquipo(JFrame parent) {
         super(parent, "Registrar Equipo", true);
-        setSize(460, 460);
+        setSize(500, 430);
         setLocationRelativeTo(parent);
-        setLayout(new BorderLayout());
+        getContentPane().setBackground(UiStyle.BACKGROUND);
+        setLayout(new BorderLayout(0, 10));
 
         clientes = daoC.listar();
         String[] items = clientes.stream()
@@ -42,16 +43,21 @@ public class FormularioEquipo extends JDialog {
     }
 
     private JPanel crearPanel() {
-        JPanel p = new JPanel(new GridBagLayout());
+        JPanel p = UiStyle.cardPanel(new GridBagLayout());
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(5, 5, 5, 5);
         g.fill = GridBagConstraints.HORIZONTAL;
         g.weightx = 1;
-        p.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
 
-        txtProblema.setLineWrap(true);
-        txtProblema.setWrapStyleWord(true);
-        txtProblema.setToolTipText("Describe la falla reportada por el cliente o el problema observado.");
+        for (JTextField field : new JTextField[]{txtCodigo, txtMarca, txtModelo}) {
+            UiStyle.styleField(field);
+        }
+        UiStyle.styleCombo(cbTipo);
+        UiStyle.styleCombo(cbEstado);
+        UiStyle.styleCombo(cbCliente);
+        UiStyle.styleTextArea(txtProblema);
+        txtProblema.setRows(2);
+        txtProblema.setToolTipText("Escribe palabras clave: mantenimiento, actualización, reparación, pantalla, disco, etc.");
 
         int row = 0;
         addRow(p, g, row++, "Código *:", txtCodigo);
@@ -65,12 +71,12 @@ public class FormularioEquipo extends JDialog {
         g.gridy = row;
         g.weightx = 0;
         g.anchor = GridBagConstraints.NORTHWEST;
-        p.add(new JLabel("Problema / falla:"), g);
+        p.add(UiStyle.label("Falla / palabras clave:"), g);
 
         g.gridx = 1;
         g.weightx = 1;
         g.fill = GridBagConstraints.BOTH;
-        g.weighty = 1;
+        g.weighty = 0.35;
         p.add(new JScrollPane(txtProblema), g);
         return p;
     }
@@ -82,7 +88,7 @@ public class FormularioEquipo extends JDialog {
         g.weighty = 0;
         g.fill = GridBagConstraints.HORIZONTAL;
         g.anchor = GridBagConstraints.WEST;
-        panel.add(new JLabel(label), g);
+        panel.add(UiStyle.label(label), g);
 
         g.gridx = 1;
         g.weightx = 1;
@@ -90,10 +96,10 @@ public class FormularioEquipo extends JDialog {
     }
 
     private JPanel crearBotones() {
-        JPanel p = new JPanel(new GridLayout(1, 2, 8, 0));
-        p.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
-        JButton btnGuardar  = new JButton("Guardar");
-        JButton btnCancelar = new JButton("Limpiar");
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 12));
+        p.setBackground(UiStyle.BACKGROUND);
+        JButton btnGuardar  = UiStyle.primaryButton("Guardar");
+        JButton btnCancelar = UiStyle.secondaryButton("Limpiar");
         btnGuardar .addActionListener(e -> guardar());
         btnCancelar.addActionListener(e -> limpiar());
         p.add(btnCancelar);
