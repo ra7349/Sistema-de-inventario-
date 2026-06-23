@@ -9,6 +9,7 @@ import org.Kardex.jF.bean.entity.Cliente;
 import org.Kardex.jF.bean.entity.Equipo;
 import org.Kardex.jF.bean.entity.Servicio;
 import org.Kardex.jF.model.ClienteModel;
+import org.Kardex.jF.model.ClienteServicioModel;
 import org.Kardex.jF.model.EquipoModel;
 import org.Kardex.jF.model.ServiciosModel;
 
@@ -24,6 +25,7 @@ public class NuevaOrdenView extends JFrame {
     private JComboBox<String> comboEstado  = new JComboBox<>(new String[]{"Recibido", "Reparacion", "Listo", "Entregado"});
 
     private JButton btnGuardar             = new JButton("Guardar");
+    private JButton btnAplicarServicio     = new JButton("Aplicar");
     private JButton btnActualizarEstado    = new JButton("Actualizar Estado");
 
     // ✅ MEJORA 2: Usar DefaultTableModel para poder agregar/eliminar filas dinámicamente
@@ -32,6 +34,7 @@ public class NuevaOrdenView extends JFrame {
 
     private ClienteModel dao = new ClienteModel();
     private ServiciosModel serviciosDao = new ServiciosModel();
+    private ClienteServicioModel clienteServicioDao = new ClienteServicioModel();
 
 	public NuevaOrdenView() {
 		setTitle("Gestión de Órdenes");
@@ -90,6 +93,7 @@ public class NuevaOrdenView extends JFrame {
 		// ── PANEL INFERIOR: BOTONES ─────────────────────────────────────
 		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 		panelBotones.add(btnActualizarEstado);
+		panelBotones.add(btnAplicarServicio);
 		panelBotones.add(btnGuardar);
 		panelPrincipal.add(panelBotones, BorderLayout.SOUTH);
 
@@ -115,6 +119,7 @@ public class NuevaOrdenView extends JFrame {
 		        campoFalla.setText("");
 		    }
 		});
+		btnAplicarServicio.addActionListener(e -> aplicarServicioCliente());
 		btnGuardar.addActionListener(e -> agregarOrdenATabla());
 		add(panelPrincipal);
 		setLocationRelativeTo(null);
@@ -139,19 +144,54 @@ public class NuevaOrdenView extends JFrame {
 	    }
 	}
 
+	private void aplicarServicioCliente() {
+	    Cliente cliente = (Cliente) comboCliente.getSelectedItem();
+	    Servicio servicio = (Servicio) comboServicios.getSelectedItem();
+
+	    if (!validarSeleccion(cliente, servicio)) {
+	        return;
+	    }
+
+	    boolean guardado = clienteServicioDao.aplicarServicio(
+	            cliente,
+	            servicio,
+	            campoNumOrden.getText(),
+	            campoEquipo.getText(),
+	            campoFalla.getText(),
+	            String.valueOf(comboEstado.getSelectedItem()));
+
+	    if (guardado) {
+	        agregarFilaTabla(cliente, servicio);
+	        JOptionPane.showMessageDialog(this, "Servicio aplicado al cliente para facturación.");
+	    } else {
+	        JOptionPane.showMessageDialog(this, "No se pudo aplicar el servicio al cliente.");
+	    }
+	}
+
 	private void agregarOrdenATabla() {
 	    Cliente cliente = (Cliente) comboCliente.getSelectedItem();
 	    Servicio servicio = (Servicio) comboServicios.getSelectedItem();
 
-	    if (cliente == null || cliente.getId().isEmpty()) {
-	        JOptionPane.showMessageDialog(this, "Seleccione un cliente.");
-	        return;
-	    }
-	    if (servicio == null || servicio.getIdServicio() == null) {
-	        JOptionPane.showMessageDialog(this, "Seleccione un servicio.");
+	    if (!validarSeleccion(cliente, servicio)) {
 	        return;
 	    }
 
+	    agregarFilaTabla(cliente, servicio);
+	}
+
+	private boolean validarSeleccion(Cliente cliente, Servicio servicio) {
+	    if (cliente == null || cliente.getId().isEmpty()) {
+	        JOptionPane.showMessageDialog(this, "Seleccione un cliente.");
+	        return false;
+	    }
+	    if (servicio == null || servicio.getIdServicio() == null) {
+	        JOptionPane.showMessageDialog(this, "Seleccione un servicio.");
+	        return false;
+	    }
+	    return true;
+	}
+
+	private void agregarFilaTabla(Cliente cliente, Servicio servicio) {
 	    modelo.addRow(new Object[]{
 	        campoNumOrden.getText(),
 	        cliente,
