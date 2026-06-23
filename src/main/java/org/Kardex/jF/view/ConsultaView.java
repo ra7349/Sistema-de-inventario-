@@ -22,16 +22,11 @@ import org.Kardex.jF.model.OrdenServicioModel;
 public class ConsultaView extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private static final String TODOS_LOS_ESTADOS = "Todos";
     private static final String[] ESTADOS_ORDEN = {
-        TODOS_LOS_ESTADOS,
-        "RECIBIDO",
-        "EN_DIAGNOSTICO",
-        "EN_REPARACION",
-        "ESPERANDO_REPUESTO",
-        "LISTO",
-        "ENTREGADO",
-        "CANCELADO"
+        "Recibido",
+        "Reparacion",
+        "Listo",
+        "Entregado"
     };
 
     private final JComboBox<String> comboEstado = new JComboBox<>(ESTADOS_ORDEN);
@@ -80,12 +75,13 @@ public class ConsultaView extends JFrame {
     }
 
     private void buscarPorEstado(boolean mostrarMensajeSinResultados) {
-        String estadoSeleccionado = Objects.toString(comboEstado.getSelectedItem(), TODOS_LOS_ESTADOS);
+        String estadoSeleccionado = Objects.toString(comboEstado.getSelectedItem(), ESTADOS_ORDEN[0]);
+        String estadoNormalizado = normalizarEstadoParaFiltro(estadoSeleccionado);
         List<OrdenServicio> ordenes = ordenServicioModel.listar();
 
         modelo.setRowCount(0);
         for (OrdenServicio orden : ordenes) {
-            if (TODOS_LOS_ESTADOS.equals(estadoSeleccionado) || estadoSeleccionado.equals(orden.getEstado())) {
+            if (estadoNormalizado.equals(normalizarEstadoParaFiltro(orden.getEstado()))) {
                 modelo.addRow(new Object[]{
                     orden.getCodigo(),
                     orden.getNombreCliente(),
@@ -101,5 +97,18 @@ public class ConsultaView extends JFrame {
         if (mostrarMensajeSinResultados && modelo.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this, "No se encontraron órdenes con el estado seleccionado.");
         }
+    }
+
+    private String normalizarEstadoParaFiltro(String estado) {
+        return Objects.toString(estado, "")
+                .trim()
+                .toUpperCase()
+                .replace("Á", "A")
+                .replace("É", "E")
+                .replace("Í", "I")
+                .replace("Ó", "O")
+                .replace("Ú", "U")
+                .replace(" ", "_")
+                .replace("EN_", "");
     }
 }
