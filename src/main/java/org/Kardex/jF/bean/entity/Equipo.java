@@ -14,7 +14,35 @@ public class Equipo {
     private Integer   idCliente;
     private String    nombreCliente; // join helper
 
-    public String    getId()                         { return id; }
+    
+    public Equipo(String id, String codigo, String marca, String modelo, String numeroSerie, String tipoEquipo,
+			Boolean estado, LocalDate fechaIngreso, Integer idCliente, String nombreCliente) {
+		super();
+		this.id = id;
+		this.codigo = codigo;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.numeroSerie = numeroSerie;
+		this.tipoEquipo = tipoEquipo;
+		this.estado = estado;
+		this.fechaIngreso = fechaIngreso;
+		this.idCliente = idCliente;
+		this.nombreCliente = nombreCliente;
+	}
+    
+
+    public Equipo(String marca, String modelo) {
+        this.marca = marca;
+        this.modelo = modelo;
+    }
+    
+	public Equipo() {
+		super();
+	}
+
+
+
+	public String    getId()                         { return id; }
     public void      setId(String id)                { this.id = id; }
     public String    getCodigo()                     { return codigo; }
     public void      setCodigo(String c)             { this.codigo = c; }

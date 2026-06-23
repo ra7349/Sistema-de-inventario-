@@ -111,4 +111,34 @@ public class EquipoModel implements CRUDUsecase<Equipo> {
         try { e.setNombreCliente(rs.getString("nombre_cliente")); } catch (Exception ignored) {}
         return e;
     }
+    
+    public static Equipo obtenerEquipoPorCliente(String idCliente) {
+    	// Si el ID está vacío (como el cliente por defecto), no buscamos nada
+        if (idCliente == null || idCliente.isEmpty()) {
+            return null;
+        }
+
+        // Tu consulta adaptada a los nombres exactos de tu tabla 'equipo'
+        String sql = "SELECT marca, modelo FROM equipo WHERE id_cliente = ? LIMIT 1";
+        
+        try (Connection cn = ConexionRepository.getConexion(); // Usa tu clase de conexión aquí
+             PreparedStatement pst = cn.prepareStatement(sql)) {
+            
+            // 🔄 Convertimos el String de Java al INTEGER que requiere tu BD
+            int idClienteInt = Integer.parseInt(idCliente);
+            pst.setInt(1, idClienteInt);
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    // Creamos el objeto Equipo con las columnas exactas de tu tabla
+                    return new Equipo(rs.getString("marca"), rs.getString("modelo"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error SQL al buscar equipo: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("El ID del cliente no es un número válido: " + e.getMessage());
+        }
+        return null;
+    }
 }

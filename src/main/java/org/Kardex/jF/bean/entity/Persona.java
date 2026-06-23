@@ -7,7 +7,23 @@ public class Persona {
     private Long   telefono;
     private String correo;
 
-    public String getId()                  { return id; }
+    
+    public Persona() {
+		super();
+	}
+
+
+	public Persona(String id, String nombre, String apellido, Long telefono, String correo) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.telefono = telefono;
+		this.correo = correo;
+	}
+
+
+	public String getId()                  { return id; }
     public void   setId(String id)         { this.id = id; }
     public String getNombre()              { return nombre; }
     public void   setNombre(String n)      { this.nombre = n; }

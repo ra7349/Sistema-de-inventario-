@@ -81,15 +81,9 @@ public class MarcoPrincipalView extends JFrame {
         menuServicios.add(itemGestionarServicio);
         
         JMenu menuOrdenes = construirMenu("Órdenes de Servicio");
-        JMenuItem itemNuevaOrden       = construirItem("Nueva Orden");
-        JMenuItem itemDiagnostico      = construirItem("Diagnóstico");
-        JMenuItem itemReparacion       = construirItem("Reparación");
-        JMenuItem itemEntrega          = construirItem("Entrega");
+        JMenuItem itemNuevaOrden       = construirItem("Gestion de ordenes");
         JMenuItem itemConsultaOrdenes  = construirItem("Consulta de Órdenes");
         menuOrdenes.add(itemNuevaOrden);
-        menuOrdenes.add(itemDiagnostico);
-        menuOrdenes.add(itemReparacion);
-        menuOrdenes.add(itemEntrega);
         menuOrdenes.add(itemConsultaOrdenes);
 
 
@@ -136,9 +130,6 @@ public class MarcoPrincipalView extends JFrame {
         itemGestionarServicio.addActionListener(e -> new GestionServicioView().setVisible(true));
 
         itemNuevaOrden.addActionListener(e -> new NuevaOrdenView().setVisible(true));
-        itemDiagnostico.addActionListener(e -> new DiagnosticoView().setVisible(true));
-        itemReparacion.addActionListener(e -> new ReparacionView().setVisible(true));
-        itemEntrega.addActionListener(e -> new EntregaView().setVisible(true));
         itemConsultaOrdenes.addActionListener(e -> new ConsultaView().setVisible(true));
         
         itemRepuestos.addActionListener(e -> new RepuestosView().setVisible(true));

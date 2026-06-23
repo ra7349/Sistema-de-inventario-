@@ -8,6 +8,9 @@ public class Servicio {
     private Double precio;
     private String estado;
     
+    public String toString() {
+        return this.descripcion + " ($" + this.precio + ")";
+    }
     
     
 	public Servicio() {
