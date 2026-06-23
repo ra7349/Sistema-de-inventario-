@@ -40,4 +40,24 @@ public class ClienteServicioModel {
         }
         return false;
     }
+    public boolean actualizarEstado(String numeroOrden, String estado) {
+        String sql = """
+                UPDATE cliente_servicio
+                SET estado = ?
+                WHERE numero_orden = ?
+                """;
+
+        try (Connection cn = ConexionRepository.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            ps.setString(1, estado);
+            ps.setString(2, numeroOrden);
+
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
