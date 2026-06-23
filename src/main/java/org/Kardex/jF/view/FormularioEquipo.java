@@ -15,7 +15,7 @@ public class FormularioEquipo extends JDialog {
     private JTextField txtCodigo      = new JTextField();
     private JTextField txtMarca       = new JTextField();
     private JTextField txtModelo      = new JTextField();
-    private JTextField txtNumeroSerie = new JTextField();
+    private JTextArea  txtProblema    = new JTextArea(3, 20);
     private JComboBox<String> cbTipo  = new JComboBox<>(
         new String[]{"Laptop","PC Escritorio","Impresora","Tablet","Monitor","Otro"});
     private JComboBox<String> cbEstado = new JComboBox<>(new String[]{"Activo","Inactivo"});
@@ -27,7 +27,7 @@ public class FormularioEquipo extends JDialog {
 
     public FormularioEquipo(JFrame parent) {
         super(parent, "Registrar Equipo", true);
-        setSize(420, 390);
+        setSize(460, 460);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
@@ -42,16 +42,51 @@ public class FormularioEquipo extends JDialog {
     }
 
     private JPanel crearPanel() {
-        JPanel p = new JPanel(new GridLayout(7, 2, 10, 8));
+        JPanel p = new JPanel(new GridBagLayout());
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(5, 5, 5, 5);
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.weightx = 1;
         p.setBorder(BorderFactory.createEmptyBorder(15, 15, 10, 15));
-        p.add(new JLabel("Código *:")); p.add(txtCodigo);
-        p.add(new JLabel("Marca:")); p.add(txtMarca);
-        p.add(new JLabel("Modelo:")); p.add(txtModelo);
-        p.add(new JLabel("N° Serie:")); p.add(txtNumeroSerie);
-        p.add(new JLabel("Tipo equipo:")); p.add(cbTipo);
-        p.add(new JLabel("Estado:")); p.add(cbEstado);
-        p.add(new JLabel("Cliente *:")); p.add(cbCliente);
+
+        txtProblema.setLineWrap(true);
+        txtProblema.setWrapStyleWord(true);
+        txtProblema.setToolTipText("Describe la falla reportada por el cliente o el problema observado.");
+
+        int row = 0;
+        addRow(p, g, row++, "Código *:", txtCodigo);
+        addRow(p, g, row++, "Marca:", txtMarca);
+        addRow(p, g, row++, "Modelo:", txtModelo);
+        addRow(p, g, row++, "Tipo equipo:", cbTipo);
+        addRow(p, g, row++, "Estado:", cbEstado);
+        addRow(p, g, row++, "Cliente *:", cbCliente);
+
+        g.gridx = 0;
+        g.gridy = row;
+        g.weightx = 0;
+        g.anchor = GridBagConstraints.NORTHWEST;
+        p.add(new JLabel("Problema / falla:"), g);
+
+        g.gridx = 1;
+        g.weightx = 1;
+        g.fill = GridBagConstraints.BOTH;
+        g.weighty = 1;
+        p.add(new JScrollPane(txtProblema), g);
         return p;
+    }
+
+    private void addRow(JPanel panel, GridBagConstraints g, int row, String label, JComponent field) {
+        g.gridx = 0;
+        g.gridy = row;
+        g.weightx = 0;
+        g.weighty = 0;
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.anchor = GridBagConstraints.WEST;
+        panel.add(new JLabel(label), g);
+
+        g.gridx = 1;
+        g.weightx = 1;
+        panel.add(field, g);
     }
 
     private JPanel crearBotones() {
@@ -77,7 +112,7 @@ public class FormularioEquipo extends JDialog {
         eq.setCodigo(txtCodigo.getText().trim());
         eq.setMarca(txtMarca.getText().trim());
         eq.setModelo(txtModelo.getText().trim());
-        eq.setNumeroSerie(txtNumeroSerie.getText().trim());
+        eq.setNumeroSerie(txtProblema.getText().trim());
         eq.setTipoEquipo((String) cbTipo.getSelectedItem());
         eq.setEstado(cbEstado.getSelectedIndex() == 0);
         eq.setFechaIngreso(java.time.LocalDate.now());
@@ -93,7 +128,7 @@ public class FormularioEquipo extends JDialog {
 
     private void limpiar() {
         txtCodigo.setText(""); txtMarca.setText(""); txtModelo.setText("");
-        txtNumeroSerie.setText(""); cbTipo.setSelectedIndex(0);
+        txtProblema.setText(""); cbTipo.setSelectedIndex(0);
         cbEstado.setSelectedIndex(0); cbCliente.setSelectedIndex(0);
         txtCodigo.requestFocus();
     }
