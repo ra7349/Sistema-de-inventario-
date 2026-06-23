@@ -93,6 +93,12 @@ public class MarcoPrincipalView extends JFrame {
         menuInventario.add(itemRepuestos);
         menuInventario.add(itemMovimiento);
 
+        JMenu menuFacturacion = construirMenu("Facturación");
+        JMenuItem itemGenerarBoleta = construirItem("Generar Boleta");
+        JMenuItem itemHistorialVentas = construirItem("Historial de Ventas");
+        menuFacturacion.add(itemGenerarBoleta);
+        menuFacturacion.add(itemHistorialVentas);
+
         JMenu menuReportes = construirMenu("Reportes");
         JMenuItem itemGenerarRportes   = construirItem("Generar Reportes");
         menuReportes.add(itemGenerarRportes);
@@ -112,6 +118,7 @@ public class MarcoPrincipalView extends JFrame {
         barra.add(menuServicios);
         barra.add(menuOrdenes);
         barra.add(menuInventario);
+        barra.add(menuFacturacion);
         barra.add(menuReportes);
         barra.add(menuAyuda);
 
@@ -134,6 +141,9 @@ public class MarcoPrincipalView extends JFrame {
         
         itemRepuestos.addActionListener(e -> new RepuestosView().setVisible(true));
         itemMovimiento.addActionListener(e -> new MovimientosView().setVisible(true));
+        
+        itemGenerarBoleta.addActionListener(e -> new GenerarBoletaView().setVisible(true));
+        itemHistorialVentas.addActionListener(e -> new HistorialVentasView().setVisible(true));
         
         itemGenerarRportes.addActionListener(e -> new ReporteView().setVisible(true));
         
