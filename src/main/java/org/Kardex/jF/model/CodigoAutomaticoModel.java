@@ -16,9 +16,14 @@ public final class CodigoAutomaticoModel {
     }
 
     public static String generarSiguienteCodigo(String tabla, String columna, String prefijo) {
+        return generarSiguienteCodigo(tabla, columna, prefijo, 3);
+    }
+
+    public static String generarSiguienteCodigo(String tabla, String columna, String prefijo, int digitos) {
         validarIdentificador(tabla);
         validarIdentificador(columna);
         validarPrefijo(prefijo);
+        validarDigitos(digitos);
 
         String sql = String.format("""
             SELECT COALESCE(MAX(CAST(SUBSTRING(%1$s FROM ?) AS INTEGER)), 0) + 1 AS siguiente
@@ -34,13 +39,13 @@ public final class CodigoAutomaticoModel {
             ps.setString(2, patron);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return String.format("%s%03d", prefijo, rs.getInt("siguiente"));
+                    return String.format("%s%0" + digitos + "d", prefijo, rs.getInt("siguiente"));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return prefijo + "001";
+        return String.format("%s%0" + digitos + "d", prefijo, 1);
     }
 
     private static void validarIdentificador(String valor) {
@@ -50,8 +55,14 @@ public final class CodigoAutomaticoModel {
     }
 
     private static void validarPrefijo(String prefijo) {
-        if (prefijo == null || !prefijo.matches("[A-Za-z]+")) {
+        if (prefijo == null || !prefijo.matches("[A-Za-z][A-Za-z0-9-]*")) {
             throw new IllegalArgumentException("Prefijo de código inválido: " + prefijo);
+        }
+    }
+
+    private static void validarDigitos(int digitos) {
+        if (digitos < 1 || digitos > 12) {
+            throw new IllegalArgumentException("Cantidad de dígitos inválida: " + digitos);
         }
     }
 }
