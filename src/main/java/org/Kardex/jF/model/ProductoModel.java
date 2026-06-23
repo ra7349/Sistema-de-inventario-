@@ -82,6 +82,10 @@ public class ProductoModel implements CRUDUsecase<Producto> {
         return null;
     }
 
+    public String generarSiguienteCodigo() {
+        return CodigoAutomaticoModel.generarSiguienteCodigo("producto", "codigo", "P");
+    }
+
     private Producto mapear(ResultSet rs) throws Exception {
         Producto p = new Producto();
         p.setId(String.valueOf(rs.getInt("id_producto")));

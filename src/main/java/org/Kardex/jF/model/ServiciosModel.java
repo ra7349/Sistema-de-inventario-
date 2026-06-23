@@ -127,21 +127,7 @@ public class ServiciosModel implements CRUDUsecase<Servicio> {
 
 
     public String generarSiguienteCodigo() {
-        String sql = """
-            SELECT COALESCE(MAX(CAST(SUBSTRING(codigo FROM 2) AS INTEGER)), 0) + 1 AS siguiente
-            FROM servicio
-            WHERE codigo ~ '^S[0-9]+$'
-            """;
-        try (Connection cn = ConexionRepository.getConexion();
-             PreparedStatement ps = cn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return String.format("S%03d", rs.getInt("siguiente"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "S001";
+        return CodigoAutomaticoModel.generarSiguienteCodigo("servicio", "codigo", "S");
     }
 
 }

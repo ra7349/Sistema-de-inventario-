@@ -26,6 +26,8 @@ public class FormularioProducto extends JDialog {
         setLayout(new BorderLayout());
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
+        txtCodigo.setEditable(false);
+        asignarSiguienteCodigo();
         UiStyle.applyTo(this);
     }
 
@@ -54,8 +56,9 @@ public class FormularioProducto extends JDialog {
     }
 
     private void guardar() {
-        if (txtCodigo.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Código y Nombre son obligatorios."); return;
+        if (txtCodigo.getText().trim().isEmpty()) asignarSiguienteCodigo();
+        if (txtNombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nombre es obligatorio."); return;
         }
         Producto prod = new Producto();
         prod.setCodigo(txtCodigo.getText().trim());
@@ -84,8 +87,13 @@ public class FormularioProducto extends JDialog {
     }
 
     private void limpiar() {
-        txtCodigo.setText(""); txtNombre.setText(""); txtDescripcion.setText("");
+        txtNombre.setText(""); txtDescripcion.setText("");
         txtPrecio.setText("0.00"); txtStock.setText("0"); cbCategoria.setSelectedIndex(0);
-        txtCodigo.requestFocus();
+        asignarSiguienteCodigo();
+        txtNombre.requestFocus();
+    }
+
+    private void asignarSiguienteCodigo() {
+        txtCodigo.setText(dao.generarSiguienteCodigo());
     }
 }

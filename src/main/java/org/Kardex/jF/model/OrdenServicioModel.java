@@ -143,19 +143,7 @@ public class OrdenServicioModel implements CRUDUsecase<OrdenServicio> {
     }
 
     public String generarSiguienteCodigo() {
-        String sql = """
-            SELECT COALESCE(MAX(CAST(SUBSTRING(numero_orden FROM 3) AS INTEGER)), 0) + 1 AS siguiente
-            FROM cliente_servicio
-            WHERE numero_orden ~ '^OS[0-9]+$'
-            """;
-        try (Connection cn = ConexionRepository.getConexion();
-             PreparedStatement ps = cn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return String.format("OS%03d", rs.getInt("siguiente"));
-            }
-        } catch (Exception e) { e.printStackTrace(); }
-        return "OS001";
+        return CodigoAutomaticoModel.generarSiguienteCodigo("cliente_servicio", "numero_orden", "OS");
     }
 
     private OrdenServicio mapear(ResultSet rs) throws Exception {

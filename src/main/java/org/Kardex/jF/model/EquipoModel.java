@@ -97,19 +97,7 @@ public class EquipoModel implements CRUDUsecase<Equipo> {
     }
 
     public String generarSiguienteCodigo() {
-        String sql = """
-            SELECT COALESCE(MAX(CAST(SUBSTRING(codigo FROM 2) AS INTEGER)), 0) + 1 AS siguiente
-            FROM equipo
-            WHERE codigo ~ '^E[0-9]+$'
-            """;
-        try (Connection cn = ConexionRepository.getConexion();
-             PreparedStatement ps = cn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return String.format("E%03d", rs.getInt("siguiente"));
-            }
-        } catch (Exception ex) { ex.printStackTrace(); }
-        return "E001";
+        return CodigoAutomaticoModel.generarSiguienteCodigo("equipo", "codigo", "E");
     }
 
     private Equipo mapear(ResultSet rs) throws Exception {
