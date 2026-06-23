@@ -60,12 +60,6 @@ public class MarcoPrincipalView extends JFrame {
         menuClientes.add(itemModificarCliente);
         menuClientes.add(itemListarClientes);
 
-        JMenu menuTecnicos = construirMenu("Técnicos");
-        JMenuItem itemRegistrarTecnico = construirItem("Registrar Técnico");
-        JMenuItem itemListarTecnicos   = construirItem("Listar Técnicos");
-        menuTecnicos.add(itemRegistrarTecnico);
-        menuTecnicos.add(itemListarTecnicos);
-
         JMenu menuEquipos = construirMenu("Equipos");
         JMenuItem itemRegistrarEquipo = construirItem("Registrar Equipo");
         JMenuItem itemListarEquipos   = construirItem("Listar Equipos");
@@ -109,7 +103,6 @@ public class MarcoPrincipalView extends JFrame {
 
         barra.add(menuArchivo);
         barra.add(menuClientes);
-        barra.add(menuTecnicos);
         barra.add(menuEquipos);
         barra.add(menuServicios);
         barra.add(menuOrdenes);
@@ -122,9 +115,6 @@ public class MarcoPrincipalView extends JFrame {
         itemRegistrarCliente.addActionListener(e -> new FormularioCliente(this).setVisible(true));
         itemModificarCliente.addActionListener(e -> new ModificarClienteView(this).setVisible(true));
         itemListarClientes  .addActionListener(e -> new ClienteListarView().setVisible(true));
-
-        itemRegistrarTecnico.addActionListener(e -> new FormularioTecnico(this).setVisible(true));
-        itemListarTecnicos  .addActionListener(e -> new TecnicoListarView().setVisible(true));
 
         itemRegistrarEquipo.addActionListener(e -> new FormularioEquipo(this).setVisible(true));
         itemListarEquipos  .addActionListener(e -> new EquipoListarView().setVisible(true));
