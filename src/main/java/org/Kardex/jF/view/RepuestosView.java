@@ -114,6 +114,7 @@ public class RepuestosView extends JFrame {
     }
 
     private void guardar() {
+        if (campoCodigo.getText().trim().isEmpty()) asignarSiguienteCodigo();
         Repuesto repuesto = leerFormulario(false);
         if (repuesto == null) return;
         if (dao.insertar(repuesto)) {
@@ -220,7 +221,7 @@ public class RepuestosView extends JFrame {
 
     private void limpiarFormulario() {
         idSeleccionado = null;
-        campoCodigo.setText("");
+        asignarSiguienteCodigo();
         campoNombre.setText("");
         campoMarca.setText("");
         comboCategoria.setSelectedIndex(0);
@@ -229,7 +230,11 @@ public class RepuestosView extends JFrame {
         campoPrecioVenta.setText("0.00");
         comboEstado.setSelectedIndex(0);
         tabla.clearSelection();
-        campoCodigo.requestFocus();
+        campoNombre.requestFocus();
+    }
+
+    private void asignarSiguienteCodigo() {
+        campoCodigo.setText(dao.generarSiguienteCodigo());
     }
 
     private void seleccionarFilaPorId(String id) {

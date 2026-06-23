@@ -88,10 +88,15 @@ public class BoletaModel {
 
     public String generarNumeroComprobante(String tipoComprobante) {
         String serie = "Factura".equals(tipoComprobante) ? "F001" : "B001";
-        String sql = "SELECT COALESCE(MAX(CAST(SUBSTRING(numero FROM 6) AS INTEGER)), 0) + 1 FROM boleta WHERE numero LIKE ?";
+        String sql = """
+            SELECT COALESCE(MAX(CAST(SUBSTRING(numero FROM 6) AS INTEGER)), 0) + 1
+            FROM boleta
+            WHERE numero LIKE ? AND numero ~ ?
+            """;
         try (Connection cn = ConexionRepository.getConexion();
              PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, serie + "-%");
+            ps.setString(2, "^" + serie + "-[0-9]+$");
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return String.format("%s-%06d", serie, rs.getInt(1));
             }

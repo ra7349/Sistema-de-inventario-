@@ -10,6 +10,7 @@ import org.Kardex.jF.bean.entity.Equipo;
 import org.Kardex.jF.bean.entity.Servicio;
 import org.Kardex.jF.model.ClienteModel;
 import org.Kardex.jF.model.ClienteServicioModel;
+import org.Kardex.jF.model.OrdenServicioModel;
 import org.Kardex.jF.model.EquipoModel;
 import org.Kardex.jF.model.ServiciosModel;
 
@@ -35,6 +36,7 @@ public class NuevaOrdenView extends JFrame {
     private ClienteModel dao = new ClienteModel();
     private ServiciosModel serviciosDao = new ServiciosModel();
     private ClienteServicioModel clienteServicioDao = new ClienteServicioModel();
+    private OrdenServicioModel ordenServicioDao = new OrdenServicioModel();
 
 	public NuevaOrdenView() {
 		setTitle("Gestión de Órdenes");
@@ -102,6 +104,7 @@ public class NuevaOrdenView extends JFrame {
 		// Cargar datos
 		cargarClientesCombo();
 		cargarServiciosCombo();
+		asignarSiguienteNumeroOrden();
 
 		comboCliente.addActionListener(e -> {
 		    Cliente seleccionado = (Cliente) comboCliente.getSelectedItem();
@@ -165,6 +168,7 @@ public class NuevaOrdenView extends JFrame {
 
 	    if (guardado) {
 	        agregarFilaTabla(cliente, servicio);
+	        asignarSiguienteNumeroOrden();
 	        JOptionPane.showMessageDialog(this, "Servicio aplicado al cliente para facturación.");
 	    } else {
 	        JOptionPane.showMessageDialog(this, "No se pudo aplicar el servicio al cliente.");
@@ -217,6 +221,10 @@ public class NuevaOrdenView extends JFrame {
 	        return false;
 	    }
 	    return true;
+	}
+
+	private void asignarSiguienteNumeroOrden() {
+	    campoNumOrden.setText(ordenServicioDao.generarSiguienteCodigo());
 	}
 
 	private void agregarFilaTabla(Cliente cliente, Servicio servicio) {

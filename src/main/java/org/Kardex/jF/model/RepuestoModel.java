@@ -73,6 +73,22 @@ public class RepuestoModel implements CRUDUsecase<Repuesto> {
         return null;
     }
 
+    public String generarSiguienteCodigo() {
+        String sql = """
+            SELECT COALESCE(MAX(CAST(SUBSTRING(codigo FROM 2) AS INTEGER)), 0) + 1 AS siguiente
+            FROM repuesto
+            WHERE codigo ~ '^R[0-9]+$'
+            """;
+        try (Connection cn = ConexionRepository.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return String.format("R%03d", rs.getInt("siguiente"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return "R001";
+    }
+
     private void prepararParametros(PreparedStatement ps, Repuesto r, boolean incluirId) throws SQLException {
         ps.setString(1, r.getCodigo());
         ps.setString(2, r.getNombre());

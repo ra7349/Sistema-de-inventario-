@@ -156,6 +156,7 @@ public class GestionServicioView extends JFrame{
 	        btnBuscar.addActionListener(e -> buscar());
 	        
 	        cargarDatos();
+	        asignarSiguienteCodigo();
 	        
 	        setLocationRelativeTo(null);
 	        setVisible(true);
@@ -200,14 +201,15 @@ public class GestionServicioView extends JFrame{
 	    }
 
 	    private void nuevo()    { 
-	        campoId.setText("");
 	        campoDesc.setText("");
 	        campoPrecio.setText("");
 	        comboEstado.setSelectedIndex(0);
 	        idServicio = null;
+	        asignarSiguienteCodigo();
 	    }
 	    
 	    private void guardar()  {
+	        if (campoId.getText().trim().isEmpty()) asignarSiguienteCodigo();
 	    	Servicio s = new Servicio();
 
 	    	s.setCodigo(campoId.getText().trim());
@@ -218,6 +220,7 @@ public class GestionServicioView extends JFrame{
 	    	if (dao.insertar(s)) {
 	    	    JOptionPane.showMessageDialog(this, "Servicio registrado correctamente",
 	    	            "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	            cargarDatos();
 	    	    nuevo();
 	    	} else {
 	    	    JOptionPane.showMessageDialog(this, "Error al registrar servicio",
@@ -298,5 +301,9 @@ public class GestionServicioView extends JFrame{
 	    	campoDesc.setText(s.getDescripcion());
 	    	campoPrecio.setText(String.valueOf(s.getPrecio()));
 	    	comboEstado.setSelectedItem(s.getEstado());
+	    }
+
+	    private void asignarSiguienteCodigo() {
+	        campoId.setText(dao.generarSiguienteCodigo());
 	    }
 }
