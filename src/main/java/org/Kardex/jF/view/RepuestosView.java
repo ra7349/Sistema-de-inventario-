@@ -31,7 +31,7 @@ public class RepuestosView extends JFrame {
     public RepuestosView() {
         setTitle("Gestionar Repuestos");
         setSize(580, 580);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createCompoundBorder(

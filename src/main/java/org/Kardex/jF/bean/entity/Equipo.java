@@ -31,9 +31,10 @@ public class Equipo {
 	}
     
 
-    public Equipo(String marca, String modelo) {
+    public Equipo(String marca, String modelo, String numero_serie) {
         this.marca = marca;
         this.modelo = modelo;
+        this.numeroSerie = numero_serie;
     }
     
 	public Equipo() {

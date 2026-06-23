@@ -119,7 +119,7 @@ public class EquipoModel implements CRUDUsecase<Equipo> {
         }
 
         // Tu consulta adaptada a los nombres exactos de tu tabla 'equipo'
-        String sql = "SELECT marca, modelo FROM equipo WHERE id_cliente = ? LIMIT 1";
+        String sql = "SELECT marca, modelo, numero_serie FROM equipo WHERE id_cliente = ? LIMIT 1";
         
         try (Connection cn = ConexionRepository.getConexion(); // Usa tu clase de conexión aquí
              PreparedStatement pst = cn.prepareStatement(sql)) {
@@ -131,7 +131,7 @@ public class EquipoModel implements CRUDUsecase<Equipo> {
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     // Creamos el objeto Equipo con las columnas exactas de tu tabla
-                    return new Equipo(rs.getString("marca"), rs.getString("modelo"));
+                    return new Equipo(rs.getString("marca"), rs.getString("modelo"), rs.getString("numero_serie"));
                 }
             }
         } catch (SQLException e) {

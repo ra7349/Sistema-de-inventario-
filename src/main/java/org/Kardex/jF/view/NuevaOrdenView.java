@@ -109,7 +109,7 @@ public class NuevaOrdenView extends JFrame {
 
 		        if (equipo != null) {
 		            campoEquipo.setText(equipo.getMarca() + " " + equipo.getModelo());
-		            campoFalla.setText("");
+		            campoFalla.setText(equipo.getNumeroSerie());
 		        } else {
 		            campoEquipo.setText("Sin equipo registrado");
 		            campoFalla.setText("");

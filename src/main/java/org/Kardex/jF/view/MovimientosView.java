@@ -23,7 +23,7 @@ public class MovimientosView extends JFrame {
     public MovimientosView() {
         setTitle("Movimientos de Inventario");
         setSize(560, 520);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createCompoundBorder(
