@@ -1,6 +1,9 @@
 package org.Kardex.jF.view;
 import javax.swing.*;
 import java.awt.*;
+import org.Kardex.jF.bean.entity.Indicadores;
+import org.Kardex.jF.model.IndicadoresModel;
+import org.Kardex.jF.usecase.IndicadoresUsecase;
 
 public class MarcoPrincipalView extends JFrame {
 
@@ -18,8 +21,10 @@ public class MarcoPrincipalView extends JFrame {
     private JLabel lblServiciosMes;
     private JLabel lblClientesRegistrados;
     private JLabel lblIngresosMes;
+    private final IndicadoresUsecase indicadoresUsecase;
 
     public MarcoPrincipalView() {
+        this.indicadoresUsecase = new IndicadoresModel();
         setTitle("JF Technology & Services — Sistema de Soporte Técnico");
         setSize(1050, 680);
         setMinimumSize(new Dimension(900, 600));
@@ -103,6 +108,7 @@ public class MarcoPrincipalView extends JFrame {
         barra.add(menuAyuda);
 
         // ── Acciones (sin cambios respecto a la lógica original) ──
+        itemInicio.addActionListener(e -> cargarIndicadores());
         itemRegistrarCliente.addActionListener(e -> new FormularioCliente(this).setVisible(true));
         itemModificarCliente.addActionListener(e -> new ModificarClienteView(this).setVisible(true));
         itemListarClientes  .addActionListener(e -> new ClienteListarView().setVisible(true));
@@ -260,17 +266,13 @@ public class MarcoPrincipalView extends JFrame {
 
     private void cargarIndicadores() {
         try {
-            int equiposEnReparacion   = 0;
-            int equiposEntregados     = 0;
-            int serviciosEsteMes      = 0;
-            int clientesRegistrados   = 0;
-            double ingresosDelMes     = 0.0;
+            Indicadores indicadores = indicadoresUsecase.obtenerIndicadores();
 
-            lblEquiposReparacion.setText(String.valueOf(equiposEnReparacion));
-            lblEquiposEntregados.setText(String.valueOf(equiposEntregados));
-            lblServiciosMes.setText(String.valueOf(serviciosEsteMes));
-            lblClientesRegistrados.setText(String.valueOf(clientesRegistrados));
-            lblIngresosMes.setText(String.format("S/ %,.2f", ingresosDelMes));
+            lblEquiposReparacion.setText(String.valueOf(indicadores.getEquiposEnReparacion()));
+            lblEquiposEntregados.setText(String.valueOf(indicadores.getEquiposEntregados()));
+            lblServiciosMes.setText(String.valueOf(indicadores.getServiciosEsteMes()));
+            lblClientesRegistrados.setText(String.valueOf(indicadores.getClientesRegistrados()));
+            lblIngresosMes.setText(String.format("S/ %,.2f", indicadores.getIngresosDelMes()));
         } catch (Exception ex) {
             // En caso de error de conexión/consulta, deja los indicadores en "--"
             // en vez de romper la pantalla principal.
