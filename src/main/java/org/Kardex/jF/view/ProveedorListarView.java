@@ -31,7 +31,7 @@ public class ProveedorListarView extends JFrame {
         setMinimumSize(new Dimension(980, 560));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        getContentPane().setBackground(UiStyle.BACKGROUND);
+        getContentPane().setBackground(new Color(245, 245, 245));
         setLayout(new BorderLayout(10, 10));
         setIconImage(new ImageIcon("image.png").getImage());
 
@@ -44,19 +44,17 @@ public class ProveedorListarView extends JFrame {
         tabla.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) cargarSeleccion();
         });
-        UiStyle.styleTable(tabla);
 
         add(crearFormulario(), BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(crearBotonera(), BorderLayout.SOUTH);
-        UiStyle.applyTo(this);
 
         nuevo();
         cargarDatos(null);
     }
 
     private JPanel crearFormulario() {
-        JPanel contenedor = UiStyle.cardPanel(new BorderLayout(8, 8));
+        JPanel contenedor = new JPanel(new BorderLayout(8, 8));
         contenedor.setBorder(BorderFactory.createTitledBorder("Registro de proveedor"));
 
         JPanel formulario = new JPanel(new GridLayout(3, 6, 8, 8));
@@ -64,25 +62,21 @@ public class ProveedorListarView extends JFrame {
         txtId.setEditable(false);
         txtCodigo.setEditable(false);
 
-        formulario.add(UiStyle.label("ID:")); formulario.add(txtId);
-        formulario.add(UiStyle.label("Código *:")); formulario.add(txtCodigo);
-        formulario.add(UiStyle.label("Estado *:")); formulario.add(cbEstado);
-        formulario.add(UiStyle.label("Razón social *:")); formulario.add(txtRazonSocial);
-        formulario.add(UiStyle.label("RUC *:")); formulario.add(txtRuc);
-        formulario.add(UiStyle.label("Teléfono:")); formulario.add(txtTelefono);
-        formulario.add(UiStyle.label("Correo:")); formulario.add(txtCorreo);
-        formulario.add(UiStyle.label("Dirección:")); formulario.add(txtDireccion);
-        formulario.add(UiStyle.label("Contacto:")); formulario.add(txtContacto);
+        formulario.add(new JLabel("ID:")); formulario.add(txtId);
+        formulario.add(new JLabel("Código *:")); formulario.add(txtCodigo);
+        formulario.add(new JLabel("Estado *:")); formulario.add(cbEstado);
+        formulario.add(new JLabel("Razón social *:")); formulario.add(txtRazonSocial);
+        formulario.add(new JLabel("RUC *:")); formulario.add(txtRuc);
+        formulario.add(new JLabel("Teléfono:")); formulario.add(txtTelefono);
+        formulario.add(new JLabel("Correo:")); formulario.add(txtCorreo);
+        formulario.add(new JLabel("Dirección:")); formulario.add(txtDireccion);
+        formulario.add(new JLabel("Contacto:")); formulario.add(txtContacto);
 
-        for (JTextField field : new JTextField[]{txtId, txtCodigo, txtRazonSocial, txtRuc, txtTelefono, txtCorreo, txtDireccion, txtContacto, txtFiltro}) {
-            UiStyle.styleField(field);
-        }
-        UiStyle.styleCombo(cbEstado);
 
         JPanel busqueda = new JPanel(new BorderLayout(8, 8));
         busqueda.setOpaque(false);
         busqueda.setBorder(BorderFactory.createTitledBorder("Búsqueda por código, razón social, RUC, teléfono, correo, dirección, contacto o estado"));
-        JButton btnBuscar = UiStyle.secondaryButton("Buscar");
+        JButton btnBuscar = new JButton("Buscar");
         busqueda.add(txtFiltro, BorderLayout.CENTER);
         busqueda.add(btnBuscar, BorderLayout.EAST);
         btnBuscar.addActionListener(e -> cargarDatos(txtFiltro.getText()));
@@ -95,13 +89,13 @@ public class ProveedorListarView extends JFrame {
 
     private JPanel crearBotonera() {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 12));
-        p.setBackground(UiStyle.BACKGROUND);
-        JButton btnNuevo = UiStyle.secondaryButton("Nuevo");
-        JButton btnGuardar = UiStyle.primaryButton("Guardar");
-        JButton btnActualizar = UiStyle.secondaryButton("Actualizar");
-        JButton btnEliminar = UiStyle.dangerButton("Eliminar");
-        JButton btnBuscar = UiStyle.secondaryButton("Buscar");
-        JButton btnLimpiar = UiStyle.secondaryButton("Limpiar");
+        p.setBackground(new Color(245, 245, 245));
+        JButton btnNuevo = new JButton("Nuevo");
+        JButton btnGuardar = new JButton("Guardar");
+        JButton btnActualizar = new JButton("Actualizar");
+        JButton btnEliminar = new JButton("Eliminar");
+        JButton btnBuscar = new JButton("Buscar");
+        JButton btnLimpiar = new JButton("Limpiar");
         btnNuevo.addActionListener(e -> nuevo());
         btnGuardar.addActionListener(e -> guardar());
         btnActualizar.addActionListener(e -> actualizar());

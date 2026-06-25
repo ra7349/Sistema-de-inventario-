@@ -1,6 +1,7 @@
 package org.Kardex.jF.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.time.LocalDateTime;
@@ -58,6 +59,7 @@ public class VentasView extends JFrame {
         setSize(920, 610);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
+        getContentPane().setBackground(new Color(245, 245, 245));
         setIconImage(new ImageIcon("image.png").getImage());
         campoNumero.setEditable(false);
         campoFecha.setEditable(false);
@@ -79,7 +81,6 @@ public class VentasView extends JFrame {
         panel.add(crearPanelInferior(), BorderLayout.SOUTH);
         add(panel, BorderLayout.CENTER);
 
-        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
         configurarRenderers();
         cargarClientes();

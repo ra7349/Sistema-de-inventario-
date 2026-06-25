@@ -31,8 +31,7 @@ public class FormularioProducto extends JDialog {
         txtCodigo.setEditable(false);
         cargarCategorias();
         asignarSiguienteCodigo();
-        UiStyle.applyTo(this);
-        this.setIconImage(new ImageIcon("image.png").getImage());
+        setIconImage(new ImageIcon("image.png").getImage());
     }
 
     private JPanel crearPanel() {
