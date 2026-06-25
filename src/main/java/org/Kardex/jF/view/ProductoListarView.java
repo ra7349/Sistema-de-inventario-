@@ -3,7 +3,9 @@ package org.Kardex.jF.view;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import org.Kardex.jF.bean.entity.Categoria;
 import org.Kardex.jF.bean.entity.Producto;
+import org.Kardex.jF.model.CategoriaModel;
 import org.Kardex.jF.model.ProductoModel;
 
 public class ProductoListarView extends JFrame {
@@ -11,12 +13,13 @@ public class ProductoListarView extends JFrame {
     private static final long serialVersionUID = 1L;
 
     private final ProductoModel dao = new ProductoModel();
+    private final CategoriaModel categoriaDao = new CategoriaModel();
     private final DefaultTableModel modelo;
     private final JTable tabla;
     private final JTextField txtId = new JTextField();
     private final JTextField txtCodigo = new JTextField();
     private final JTextField txtNombre = new JTextField();
-    private final JComboBox<String> cbCategoria = new JComboBox<>(new String[]{"Golosinas", "Bebidas", "Caramelos", "Chocolates", "Galletas", "Snacks", "Gomitas", "Otros"});
+    private final JComboBox<String> cbCategoria = new JComboBox<>();
     private final JTextField txtPresentacion = new JTextField();
     private final JTextField txtUnidadMedida = new JTextField();
     private final JTextField txtPrecioCompra = new JTextField("0.00");
@@ -48,6 +51,7 @@ public class ProductoListarView extends JFrame {
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(crearBotonera(), BorderLayout.SOUTH);
         UiStyle.applyTo(this);
+        cargarCategorias();
         nuevo();
         cargarDatos(null);
     }
@@ -135,6 +139,7 @@ public class ProductoListarView extends JFrame {
     private Producto leerFormulario(boolean requiereId) {
         String codigo = txtCodigo.getText().trim();
         String nombre = txtNombre.getText().trim();
+        if (cbCategoria.getSelectedItem() == null) { JOptionPane.showMessageDialog(this, "Registre una categoría activa antes de crear productos."); return null; }
         String categoria = String.valueOf(cbCategoria.getSelectedItem()).trim();
         if (requiereId && txtId.getText().trim().isEmpty()) { JOptionPane.showMessageDialog(this, "Seleccione un producto para actualizar."); return null; }
         if (codigo.isEmpty() || nombre.isEmpty() || categoria.isEmpty()) { JOptionPane.showMessageDialog(this, "Código, nombre y categoría son obligatorios."); return null; }
@@ -207,11 +212,19 @@ public class ProductoListarView extends JFrame {
         cargarDatos(null);
     }
 
+    private void cargarCategorias() {
+        cbCategoria.removeAllItems();
+        for (Categoria categoria : categoriaDao.listar()) {
+            cbCategoria.addItem(categoria.getNombre());
+        }
+        cbCategoria.setEnabled(cbCategoria.getItemCount() > 0);
+    }
+
     private void nuevo() {
         txtId.setText("");
         txtCodigo.setText(dao.generarSiguienteCodigo());
         txtNombre.setText("");
-        cbCategoria.setSelectedIndex(0);
+        if (cbCategoria.getItemCount() > 0) cbCategoria.setSelectedIndex(0);
         txtPresentacion.setText("");
         txtUnidadMedida.setText("");
         txtPrecioCompra.setText("0.00");
