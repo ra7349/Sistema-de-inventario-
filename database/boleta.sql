@@ -149,13 +149,16 @@ CREATE TABLE IF NOT EXISTS boleta_detalle (
     importe NUMERIC(10, 2) NOT NULL DEFAULT 0,
     id_cliente_servicio INTEGER,
     id_repuesto INTEGER,
+    id_producto INTEGER,
 
     CONSTRAINT fk_boleta_detalle_boleta
         FOREIGN KEY (id_boleta) REFERENCES boleta(id_boleta) ON DELETE CASCADE,
     CONSTRAINT fk_boleta_detalle_cliente_servicio
         FOREIGN KEY (id_cliente_servicio) REFERENCES cliente_servicio(id_cliente_servicio),
     CONSTRAINT fk_boleta_detalle_repuesto
-        FOREIGN KEY (id_repuesto) REFERENCES repuesto(id_repuesto)
+        FOREIGN KEY (id_repuesto) REFERENCES repuesto(id_repuesto),
+    CONSTRAINT fk_boleta_detalle_producto
+        FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
 
 -- 3. Índices simples para búsquedas comunes
@@ -167,6 +170,7 @@ CREATE INDEX IF NOT EXISTS idx_movimiento_repuesto ON movimiento_inventario(id_r
 CREATE INDEX IF NOT EXISTS idx_boleta_cliente ON boleta(id_cliente);
 CREATE INDEX IF NOT EXISTS idx_boleta_fecha ON boleta(fecha);
 CREATE INDEX IF NOT EXISTS idx_boleta_detalle_boleta ON boleta_detalle(id_boleta);
+CREATE INDEX IF NOT EXISTS idx_boleta_detalle_producto ON boleta_detalle(id_producto);
 
 INSERT INTO usuario (usuario, contraseña)
 VALUES ('admin', '123456')
