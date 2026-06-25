@@ -16,7 +16,7 @@ public class ModificarClienteView extends JDialog {
     private JTextField txtCorreo    = new JTextField();
     private JTextField txtDireccion = new JTextField();
     private JTextField txtRuc       = new JTextField();
-    private JComboBox<String> cbTipo = new JComboBox<>(new String[]{"Natural","Empresa"});
+    private JComboBox<String> cbTipo = new JComboBox<>(new String[]{"Minorista", "Mayorista"});
 
     private final ClienteModel dao = new ClienteModel();
     private String idCliente = null;
@@ -77,20 +77,20 @@ public class ModificarClienteView extends JDialog {
         txtCorreo   .setText(c.getCorreo()   != null ? c.getCorreo()   : "");
         txtDireccion.setText(c.getDireccion()!= null ? c.getDireccion(): "");
         txtRuc      .setText(c.getRUC()      != null ? String.valueOf(c.getRUC()) : "");
-        cbTipo.setSelectedItem(c.getTipoCliente() != null ? c.getTipoCliente() : "Natural");
+        cbTipo.setSelectedItem(c.getTipoCliente() != null ? c.getTipoCliente() : "Minorista");
     }
 
     private void guardar() {
         if (idCliente == null) { JOptionPane.showMessageDialog(this, "Primero busque un cliente."); return; }
+        if (txtNombre.getText().trim().isEmpty() || txtApellido.getText().trim().isEmpty()) { JOptionPane.showMessageDialog(this, "Nombre y apellido son obligatorios."); return; }
+        if (!txtTelefono.getText().trim().isEmpty() && !txtTelefono.getText().trim().matches("\\d{6,15}")) { JOptionPane.showMessageDialog(this, "El teléfono debe contener solo números (6 a 15 dígitos)."); return; }
+        if (!txtCorreo.getText().trim().isEmpty() && !txtCorreo.getText().trim().matches("^[\\w._%+-]+@[\\w.-]+\\.[A-Za-z]{2,}$")) { JOptionPane.showMessageDialog(this, "Ingrese un correo válido."); return; }
         Cliente c = new Cliente();
         c.setId(idCliente);
         c.setCodigo(txtCodigo.getText().trim());
         c.setNombre(txtNombre.getText().trim());
         c.setApellido(txtApellido.getText().trim());
-        try {
-            if (!txtTelefono.getText().trim().isEmpty())
-                c.setTelefono(Long.parseLong(txtTelefono.getText().trim()));
-        } catch (NumberFormatException ex) { JOptionPane.showMessageDialog(this,"Teléfono inválido."); return; }
+        if (!txtTelefono.getText().trim().isEmpty()) c.setTelefono(Long.parseLong(txtTelefono.getText().trim()));
         c.setCorreo(txtCorreo.getText().trim());
         c.setDireccion(txtDireccion.getText().trim());
         c.setTipoCliente((String) cbTipo.getSelectedItem());

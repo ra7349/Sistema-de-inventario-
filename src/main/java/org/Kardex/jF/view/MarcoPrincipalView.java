@@ -102,6 +102,9 @@ public class MarcoPrincipalView extends JFrame {
         itemInicio.addActionListener(e -> cargarIndicadores());
         itemRegistrarProducto.addActionListener(e -> new ProductoListarView().setVisible(true));
         itemListarProductos.addActionListener(e -> new ProductoListarView().setVisible(true));
+        itemGestionarCategorias.addActionListener(e -> new GestionServicioView().setVisible(true));
+        itemRegistrarCliente.addActionListener(e -> new ClienteListarView().setVisible(true));
+        itemModificarCliente.addActionListener(e -> new ClienteListarView().setVisible(true));
         itemGestionarCategorias.addActionListener(e -> new CategoriaView().setVisible(true));
         itemRegistrarCliente.addActionListener(e -> new FormularioCliente(this).setVisible(true));
         itemModificarCliente.addActionListener(e -> new ModificarClienteView(this).setVisible(true));

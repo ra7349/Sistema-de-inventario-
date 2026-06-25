@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS cliente (
     telefono BIGINT,
     correo VARCHAR(100),
     direccion VARCHAR(200),
-    tipo_cliente VARCHAR(50) NOT NULL DEFAULT 'Natural',
+    tipo_cliente VARCHAR(50) NOT NULL DEFAULT 'Minorista',
     ruc BIGINT
 );
 
@@ -163,11 +163,11 @@ ON CONFLICT (usuario) DO NOTHING;
 INSERT INTO cliente
 (codigo, nombre, apellido, telefono, correo, direccion, tipo_cliente, ruc)
 VALUES
-('C001','Juan','Pérez',987654321,'juan@gmail.com','Av. Los Incas 123','Natural',NULL),
-('C002','María','Quispe',912345678,'maria@gmail.com','Av. Cultura 456','Natural',NULL),
-('C003','Carlos','Huamán',923456789,'carlos@gmail.com','Urb. Magisterio','Natural',NULL),
-('C004','Tech Solutions SAC',NULL,984567123,'ventas@techsolutions.com','Parque Industrial','Jurídico',20601234567),
-('C005','Innova Perú SAC',NULL,976543210,'contacto@innova.com','Av. El Sol 789','Jurídico',20598765432);
+('C001','Juan','Pérez',987654321,'juan@gmail.com','Av. Los Incas 123','Minorista',NULL),
+('C002','María','Quispe',912345678,'maria@gmail.com','Av. Cultura 456','Minorista',NULL),
+('C003','Carlos','Huamán',923456789,'carlos@gmail.com','Urb. Magisterio','Minorista',NULL),
+('C004','Tech Solutions SAC',NULL,984567123,'ventas@techsolutions.com','Parque Industrial','Mayorista',20601234567),
+('C005','Innova Perú SAC',NULL,976543210,'contacto@innova.com','Av. El Sol 789','Mayorista',20598765432);
 
 
 -- CATEGORÍAS

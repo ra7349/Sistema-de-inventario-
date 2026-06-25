@@ -173,7 +173,7 @@ public class GenerarBoletaView extends JFrame {
         actualizarTotales();
     }
     private boolean esClienteEmpresa(Cliente cliente) {
-        return cliente.getTipoCliente() != null && cliente.getTipoCliente().equalsIgnoreCase("Empresa");
+        return cliente.getTipoCliente() != null && cliente.getTipoCliente().equalsIgnoreCase("Mayorista");
     }
     
     private void agregarRepuesto() {
