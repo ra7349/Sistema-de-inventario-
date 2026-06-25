@@ -113,7 +113,7 @@ public class MarcoPrincipalView extends JFrame {
         itemStock.addActionListener(e -> new RepuestosView().setVisible(true));
         itemMovimiento.addActionListener(e -> new MovimientosView().setVisible(true));
         itemCambiarContraseña.addActionListener(e -> new ActualizarcontraseñaView().setVisible(true));
-        itemGenerarVenta.addActionListener(e -> new GenerarBoletaView().setVisible(true));
+        itemGenerarVenta.addActionListener(e -> new VentasView().setVisible(true));
         itemHistorialVentas.addActionListener(e -> new HistorialVentasView().setVisible(true));
         itemAcercaDe.addActionListener(e -> JOptionPane.showMessageDialog(this,
                 "Golocentro\nSistema de Inventario para distribución mayorista y minorista v1.0\n2026",
