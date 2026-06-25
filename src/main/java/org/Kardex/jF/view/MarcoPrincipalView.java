@@ -100,7 +100,7 @@ public class MarcoPrincipalView extends JFrame {
         barra.add(menuReportes);
 
         itemInicio.addActionListener(e -> cargarIndicadores());
-        itemRegistrarProducto.addActionListener(e -> new FormularioProducto(this).setVisible(true));
+        itemRegistrarProducto.addActionListener(e -> new ProductoListarView().setVisible(true));
         itemListarProductos.addActionListener(e -> new ProductoListarView().setVisible(true));
         itemGestionarCategorias.addActionListener(e -> new GestionServicioView().setVisible(true));
         itemRegistrarCliente.addActionListener(e -> new FormularioCliente(this).setVisible(true));
