@@ -84,4 +84,11 @@ public class Producto {
     public void setStock(Integer stock) { this.stockActual = stock; }
     public String getUnidadVenta() { return unidadMedida; }
     public void setUnidadVenta(String unidadVenta) { this.unidadMedida = unidadVenta; }
+
+    @Override
+    public String toString() {
+        String codigoTexto = codigo == null ? "" : codigo;
+        String nombreTexto = nombre == null ? "" : nombre;
+        return codigoTexto + " - " + nombreTexto;
+    }
 }
