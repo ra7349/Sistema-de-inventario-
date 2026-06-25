@@ -147,7 +147,7 @@ public class ClienteListarView extends JFrame {
         int id = Integer.parseInt(txtId.getText().trim());
         if (JOptionPane.showConfirmDialog(this, "¿Eliminar cliente seleccionado?", "Confirmar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             if (dao.eliminar(id)) { JOptionPane.showMessageDialog(this, "Cliente eliminado."); limpiarTodo(); }
-            else JOptionPane.showMessageDialog(this, "No se pudo eliminar. Puede tener ventas, equipos u órdenes asociadas.");
+            else JOptionPane.showMessageDialog(this, "No se pudo eliminar. Puede tener ventas asociadas.");
         }
     }
 

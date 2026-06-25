@@ -16,8 +16,8 @@ public class IndicadoresModel implements IndicadoresUsecase {
         try (Connection cn = ConexionRepository.getConexion()) {
             if (cn == null) return new Indicadores();
             return new Indicadores(
-                    consultarEntero(cn, "SELECT COUNT(*) FROM producto WHERE COALESCE(stock,0) <= 10"),
-                    consultarEntero(cn, "SELECT COUNT(*) FROM boleta WHERE UPPER(COALESCE(estado,'')) <> 'ANULADO'"),
+                    consultarEntero(cn, "SELECT COUNT(*) FROM producto WHERE COALESCE(stock_actual,0) <= COALESCE(stock_minimo,10)"),
+                    consultarEntero(cn, "SELECT COUNT(*) FROM ventas WHERE UPPER(COALESCE(estado,'')) <> 'ANULADO'"),
                     contarMovimientosDelMes(cn, inicioMes, inicioMesSiguiente),
                     consultarEntero(cn, "SELECT COUNT(*) FROM cliente"),
                     sumarIngresosDelMes(cn, inicioMes, inicioMesSiguiente));
@@ -31,7 +31,7 @@ public class IndicadoresModel implements IndicadoresUsecase {
     }
 
     private double sumarIngresosDelMes(Connection cn, LocalDate inicioMes, LocalDate inicioMesSiguiente) throws Exception {
-        String sql = "SELECT COALESCE(SUM(total), 0) FROM boleta WHERE fecha >= ? AND fecha < ? AND UPPER(COALESCE(estado, '')) <> 'ANULADO'";
+        String sql = "SELECT COALESCE(SUM(total), 0) FROM ventas WHERE fecha >= ? AND fecha < ? AND UPPER(COALESCE(estado, '')) <> 'ANULADO'";
         try (PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setDate(1, java.sql.Date.valueOf(inicioMes));
             ps.setDate(2, java.sql.Date.valueOf(inicioMesSiguiente));

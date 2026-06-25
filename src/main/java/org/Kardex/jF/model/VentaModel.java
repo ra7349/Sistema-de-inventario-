@@ -17,12 +17,12 @@ public class VentaModel implements VentaUsecase {
     @Override
     public boolean insertar(Venta venta) {
         String sqlVenta = """
-            INSERT INTO boleta (numero, tipo_comprobante, id_cliente, dni_ruc, metodo_pago, fecha, subtotal, igv, total, estado)
+            INSERT INTO ventas (numero, tipo_comprobante, id_cliente, dni_ruc, metodo_pago, fecha, subtotal, igv, total, estado)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
         String sqlDetalle = """
-            INSERT INTO boleta_detalle (id_boleta, tipo_item, descripcion, cantidad, precio_unitario, importe, id_producto)
-            VALUES (?, 'PRODUCTO', ?, ?, ?, ?, ?)
+            INSERT INTO detalle_ventas (id_venta, id_producto, descripcion, cantidad, precio_unitario, importe)
+            VALUES (?, ?, ?, ?, ?, ?)
             """;
         String sqlDescontarStock = """
             UPDATE producto
@@ -59,11 +59,11 @@ public class VentaModel implements VentaUsecase {
                         }
 
                         psDetalle.setInt(1, idVenta);
-                        psDetalle.setString(2, detalle.getDescripcion());
-                        psDetalle.setInt(3, detalle.getCantidad());
-                        psDetalle.setDouble(4, detalle.getPrecioUnitario());
-                        psDetalle.setDouble(5, detalle.getImporte());
-                        psDetalle.setInt(6, detalle.getIdProducto());
+                        psDetalle.setInt(2, detalle.getIdProducto());
+                        psDetalle.setString(3, detalle.getDescripcion());
+                        psDetalle.setInt(4, detalle.getCantidad());
+                        psDetalle.setDouble(5, detalle.getPrecioUnitario());
+                        psDetalle.setDouble(6, detalle.getImporte());
                         psDetalle.addBatch();
                     }
                     psDetalle.executeBatch();
@@ -92,7 +92,7 @@ public class VentaModel implements VentaUsecase {
     @Override
     public String generarNumeroVenta(String tipoComprobante) {
         String prefijo = "Factura".equals(tipoComprobante) ? "F" : "B";
-        String sql = "SELECT COALESCE(MAX(id_boleta), 0) + 1 FROM boleta";
+        String sql = "SELECT COALESCE(MAX(id_venta), 0) + 1 FROM ventas";
         try (Connection cn = ConexionRepository.getConexion();
              PreparedStatement ps = cn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

@@ -1,9 +1,9 @@
 package org.Kardex.jF.view;
 
 import org.Kardex.jF.bean.entity.Cliente;
-import org.Kardex.jF.model.BoletaModel;
-import org.Kardex.jF.model.BoletaModel.DetalleHistorial;
-import org.Kardex.jF.model.BoletaModel.VentaHistorial;
+import org.Kardex.jF.model.HistorialVentasModel;
+import org.Kardex.jF.model.HistorialVentasModel.DetalleHistorial;
+import org.Kardex.jF.model.HistorialVentasModel.VentaHistorial;
 import org.Kardex.jF.model.ClienteModel;
 
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class HistorialVentasView extends JFrame {
     private final JLabel lblCantidadVentas = new JLabel("0 ventas");
     private final DefaultTableModel modelo;
     private final JTable tabla;
-    private final BoletaModel boletaModel = new BoletaModel();
+    private final HistorialVentasModel historialVentasModel = new HistorialVentasModel();
     private final ClienteModel clienteModel = new ClienteModel();
 
     public HistorialVentasView() {
@@ -117,7 +117,7 @@ public class HistorialVentasView extends JFrame {
     }
 
     private void cargarVentas() {
-        llenarTabla(boletaModel.listarHistorialVentas(null));
+        llenarTabla(historialVentasModel.listarHistorialVentas(null));
     }
 
     private void buscarVentas() {
@@ -127,7 +127,7 @@ public class HistorialVentasView extends JFrame {
         if (fecha == null && !txtFecha.getText().trim().isEmpty()) {
             return;
         }
-        llenarTabla(boletaModel.buscarHistorialVentas(idCliente, fecha, txtComprobante.getText()));
+        llenarTabla(historialVentasModel.buscarHistorialVentas(idCliente, fecha, txtComprobante.getText()));
     }
 
     private LocalDate obtenerFechaFiltro() {
@@ -155,7 +155,7 @@ public class HistorialVentasView extends JFrame {
         modelo.setRowCount(0);
         for (VentaHistorial venta : ventas) {
             modelo.addRow(new Object[]{
-                    venta.idBoleta(),
+                    venta.idVenta(),
                     venta.numero(),
                     venta.tipoComprobante(),
                     venta.idCliente(),
@@ -177,8 +177,8 @@ public class HistorialVentasView extends JFrame {
             JOptionPane.showMessageDialog(this, "Seleccione una venta.");
             return;
         }
-        int idBoleta = Integer.parseInt(String.valueOf(modelo.getValueAt(fila, 0)));
-        List<DetalleHistorial> detalles = boletaModel.listarDetalleHistorial(idBoleta);
+        int idVenta = Integer.parseInt(String.valueOf(modelo.getValueAt(fila, 0)));
+        List<DetalleHistorial> detalles = historialVentasModel.listarDetalleHistorial(idVenta);
         JTable tablaDetalle = new JTable(new DefaultTableModel(new String[]{
                 "Tipo", "Descripción", "Cantidad", "Precio Unit.", "Importe"
         }, 0) {
