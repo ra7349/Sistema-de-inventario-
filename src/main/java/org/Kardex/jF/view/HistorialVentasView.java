@@ -36,7 +36,8 @@ public class HistorialVentasView extends JFrame {
         setSize(1180, 620);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
-        this.setIconImage(new ImageIcon("image.png").getImage());
+        getContentPane().setBackground(new Color(245, 245, 245));
+        setIconImage(new ImageIcon("image.png").getImage());
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -58,7 +59,6 @@ public class HistorialVentasView extends JFrame {
         panel.add(crearPanelAcciones(), BorderLayout.SOUTH);
 
         add(panel, BorderLayout.CENTER);
-        UiStyle.applyTo(this);
         setLocationRelativeTo(null);
         cargarClientes();
         cargarVentas();

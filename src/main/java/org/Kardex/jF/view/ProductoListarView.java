@@ -36,6 +36,7 @@ public class ProductoListarView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
+        getContentPane().setBackground(new Color(245, 245, 245));
         setIconImage(new ImageIcon("image.png").getImage());
 
         modelo = new DefaultTableModel(new String[]{"ID", "Código", "Nombre", "Categoría", "Presentación", "Unidad", "Compra", "Minorista", "Mayorista", "Stock", "Mínimo", "Estado"}, 0) {
@@ -50,7 +51,6 @@ public class ProductoListarView extends JFrame {
         add(crearFormulario(), BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(crearBotonera(), BorderLayout.SOUTH);
-        UiStyle.applyTo(this);
         cargarCategorias();
         nuevo();
         cargarDatos(null);

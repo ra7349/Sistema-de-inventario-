@@ -1,6 +1,7 @@
 package org.Kardex.jF.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
@@ -41,6 +42,7 @@ public class CategoriaView extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
+        getContentPane().setBackground(new Color(245, 245, 245));
         setIconImage(new ImageIcon("image.png").getImage());
 
         modelo = new DefaultTableModel(new String[]{"ID", "Código", "Nombre", "Descripción", "Estado"}, 0) {
@@ -56,7 +58,6 @@ public class CategoriaView extends JFrame {
         add(crearFormulario(), BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(crearBotonera(), BorderLayout.SOUTH);
-        UiStyle.applyTo(this);
         nuevo();
         cargarDatos(null);
     }
