@@ -103,8 +103,8 @@ public class MarcoPrincipalView extends JFrame {
         itemRegistrarProducto.addActionListener(e -> new ProductoListarView().setVisible(true));
         itemListarProductos.addActionListener(e -> new ProductoListarView().setVisible(true));
         itemGestionarCategorias.addActionListener(e -> new GestionServicioView().setVisible(true));
-        itemRegistrarCliente.addActionListener(e -> new FormularioCliente(this).setVisible(true));
-        itemModificarCliente.addActionListener(e -> new ModificarClienteView(this).setVisible(true));
+        itemRegistrarCliente.addActionListener(e -> new ClienteListarView().setVisible(true));
+        itemModificarCliente.addActionListener(e -> new ClienteListarView().setVisible(true));
         itemListarClientes.addActionListener(e -> new ClienteListarView().setVisible(true));
         itemProveedores.addActionListener(e -> JOptionPane.showMessageDialog(this, "Módulo de proveedores preparado para registrar abastecedores de golosinas y bebidas."));
         itemStock.addActionListener(e -> new RepuestosView().setVisible(true));

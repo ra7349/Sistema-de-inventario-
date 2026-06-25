@@ -91,6 +91,34 @@ public class ClienteModel implements CRUDUsecase<Cliente> {
         return null;
     }
 
+
+    public List<Cliente> buscar(String filtro) {
+        List<Cliente> lista = new ArrayList<>();
+        String texto = filtro == null ? "" : filtro.trim();
+        String sql = """
+            SELECT * FROM cliente
+            WHERE (? = ''
+                OR LOWER(codigo) LIKE LOWER(?)
+                OR LOWER(nombre) LIKE LOWER(?)
+                OR LOWER(COALESCE(apellido, '')) LIKE LOWER(?)
+                OR CAST(COALESCE(telefono, 0) AS TEXT) LIKE ?
+                OR LOWER(COALESCE(correo, '')) LIKE LOWER(?)
+                OR LOWER(COALESCE(direccion, '')) LIKE LOWER(?)
+                OR LOWER(tipo_cliente) LIKE LOWER(?))
+            ORDER BY id_cliente
+            """;
+        String patron = "%" + texto + "%";
+        try (Connection cn = ConexionRepository.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setString(1, texto);
+            for (int i = 2; i <= 8; i++) ps.setString(i, patron);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return lista;
+    }
+
     public String generarSiguienteCodigo() {
         return CodigoAutomaticoModel.generarSiguienteCodigo("cliente", "codigo", "C");
     }

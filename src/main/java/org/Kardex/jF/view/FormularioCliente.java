@@ -16,7 +16,7 @@ public class FormularioCliente extends JDialog {
     private JTextField txtCorreo      = new JTextField();
     private JTextField txtDireccion   = new JTextField();
     private JTextField txtRuc         = new JTextField();
-    private JComboBox<String> cbTipo  = new JComboBox<>(new String[]{"Natural", "Empresa"});
+    private JComboBox<String> cbTipo  = new JComboBox<>(new String[]{"Minorista", "Mayorista"});
 
     private final ClienteModel dao = new ClienteModel();
 
@@ -64,8 +64,13 @@ public class FormularioCliente extends JDialog {
     }
 
     private void guardar() {
-        if (txtNombre.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre es obligatorio.");
+        if (txtNombre.getText().trim().isEmpty() || txtApellido.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nombre y apellido son obligatorios.");
+            return;
+        }
+        if (!txtCorreo.getText().trim().isEmpty()
+                && !txtCorreo.getText().trim().matches("^[\\w._%+-]+@[\\w.-]+\\.[A-Za-z]{2,}$")) {
+            JOptionPane.showMessageDialog(this, "Ingrese un correo válido.");
             return;
         }
         if (txtCodigo.getText().trim().isEmpty()) asignarSiguienteCodigo();
@@ -73,12 +78,10 @@ public class FormularioCliente extends JDialog {
         c.setCodigo(txtCodigo.getText().trim());
         c.setNombre(txtNombre.getText().trim());
         c.setApellido(txtApellido.getText().trim());
-        try {
-            if (!txtTelefono.getText().trim().isEmpty())
-                c.setTelefono(Long.parseLong(txtTelefono.getText().trim()));
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Teléfono inválido."); return;
+        if (!txtTelefono.getText().trim().isEmpty() && !txtTelefono.getText().trim().matches("\\d{6,15}")) {
+            JOptionPane.showMessageDialog(this, "El teléfono debe contener solo números (6 a 15 dígitos)."); return;
         }
+        if (!txtTelefono.getText().trim().isEmpty()) c.setTelefono(Long.parseLong(txtTelefono.getText().trim()));
         c.setCorreo(txtCorreo.getText().trim());
         c.setDireccion(txtDireccion.getText().trim());
         c.setTipoCliente((String) cbTipo.getSelectedItem());
