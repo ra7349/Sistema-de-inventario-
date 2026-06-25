@@ -10,6 +10,15 @@ CREATE TABLE IF NOT EXISTS cliente (
     ruc BIGINT
 );
 
+
+CREATE TABLE IF NOT EXISTS categoria (
+    id_categoria SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombre VARCHAR(100) NOT NULL UNIQUE,
+    descripcion VARCHAR(200),
+    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
+);
+
 CREATE TABLE IF NOT EXISTS producto (
     id_producto SERIAL PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE,
@@ -159,6 +168,17 @@ VALUES
 ('C003','Carlos','Huamán',923456789,'carlos@gmail.com','Urb. Magisterio','Minorista',NULL),
 ('C004','Tech Solutions SAC',NULL,984567123,'ventas@techsolutions.com','Parque Industrial','Mayorista',20601234567),
 ('C005','Innova Perú SAC',NULL,976543210,'contacto@innova.com','Av. El Sol 789','Mayorista',20598765432);
+
+
+-- CATEGORÍAS
+INSERT INTO categoria
+(codigo, nombre, descripcion, estado)
+VALUES
+('CAT001','Golosinas','Dulces, caramelos y productos de confitería','Activo'),
+('CAT002','Bebidas','Bebidas embotelladas y en pack','Activo'),
+('CAT003','Galletas','Galletas dulces y saladas','Activo'),
+('CAT004','Snacks','Piqueos, chips y productos similares','Activo')
+ON CONFLICT (codigo) DO NOTHING;
 
 -- PRODUCTOS
 INSERT INTO producto

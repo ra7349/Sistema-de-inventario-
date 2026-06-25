@@ -2,7 +2,9 @@ package org.Kardex.jF.view;
 
 import javax.swing.*;
 import java.awt.*;
+import org.Kardex.jF.bean.entity.Categoria;
 import org.Kardex.jF.bean.entity.Producto;
+import org.Kardex.jF.model.CategoriaModel;
 import org.Kardex.jF.model.ProductoModel;
 
 public class FormularioProducto extends JDialog {
@@ -14,10 +16,10 @@ public class FormularioProducto extends JDialog {
     private JTextField txtDescripcion = new JTextField();
     private JTextField txtPrecio      = new JTextField("0.00");
     private JTextField txtStock       = new JTextField("0");
-    private JComboBox<String> cbCategoria = new JComboBox<>(
-        new String[]{"Golosinas", "Bebidas", "Caramelos", "Chocolates", "Galletas", "Snacks", "Gomitas"});
+    private JComboBox<String> cbCategoria = new JComboBox<>();
 
     private final ProductoModel dao = new ProductoModel();
+    private final CategoriaModel categoriaDao = new CategoriaModel();
 
     public FormularioProducto(JFrame parent) {
         super(parent, "Registrar producto Golocentro", true);
@@ -27,6 +29,7 @@ public class FormularioProducto extends JDialog {
         add(crearPanel(), BorderLayout.CENTER);
         add(crearBotones(), BorderLayout.SOUTH);
         txtCodigo.setEditable(false);
+        cargarCategorias();
         asignarSiguienteCodigo();
         UiStyle.applyTo(this);
         this.setIconImage(new ImageIcon("image.png").getImage());
@@ -78,6 +81,10 @@ public class FormularioProducto extends JDialog {
             JOptionPane.showMessageDialog(this, "Precio y stock deben ser numéricos.");
             return;
         }
+        if (cbCategoria.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "Registre una categoría activa antes de crear productos.");
+            return;
+        }
         prod.setCategoria((String) cbCategoria.getSelectedItem());
         if (dao.insertar(prod)) {
             JOptionPane.showMessageDialog(this, "Producto registrado.");
@@ -89,12 +96,24 @@ public class FormularioProducto extends JDialog {
 
     private void limpiar() {
         txtNombre.setText(""); txtDescripcion.setText("");
-        txtPrecio.setText("0.00"); txtStock.setText("0"); cbCategoria.setSelectedIndex(0);
+        txtPrecio.setText("0.00"); txtStock.setText("0");
+        if (cbCategoria.getItemCount() > 0) cbCategoria.setSelectedIndex(0);
         asignarSiguienteCodigo();
         txtNombre.requestFocus();
     }
 
     private void asignarSiguienteCodigo() {
         txtCodigo.setText(dao.generarSiguienteCodigo());
+    }
+
+    private void cargarCategorias() {
+        cbCategoria.removeAllItems();
+        for (Categoria categoria : categoriaDao.listar()) {
+            cbCategoria.addItem(categoria.getNombre());
+        }
+        if (cbCategoria.getItemCount() == 0) {
+            cbCategoria.setEnabled(false);
+            JOptionPane.showMessageDialog(this, "No hay categorías activas registradas. Cree una categoría antes de registrar productos.");
+        }
     }
 }
