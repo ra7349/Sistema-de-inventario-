@@ -11,17 +11,13 @@ public class ProductoModel implements CRUDUsecase<Producto> {
     @Override
     public boolean insertar(Producto p) {
         String sql = """
-            INSERT INTO producto (codigo,nombre,descripcion,precio,stock,categoria)
-            VALUES (?,?,?,?,?,?)
+            INSERT INTO producto (codigo,nombre,categoria,presentacion,unidad_medida,precio_compra,
+                                  precio_minorista,precio_mayorista,stock_actual,stock_minimo,estado)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)
             """;
         try (Connection cn = ConexionRepository.getConexion();
              PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, p.getCodigo());
-            ps.setString(2, p.getNombre());
-            ps.setString(3, p.getDescripcion());
-            ps.setDouble(4, p.getPrecio());
-            ps.setInt(5, p.getStock() != null ? p.getStock() : 0);
-            ps.setString(6, p.getCategoria());
+            prepararParametros(ps, p, false);
             return ps.executeUpdate() > 0;
         } catch (Exception e) { e.printStackTrace(); }
         return false;
@@ -39,21 +35,39 @@ public class ProductoModel implements CRUDUsecase<Producto> {
         return lista;
     }
 
+    public List<Producto> buscar(String filtro) {
+        if (filtro == null || filtro.trim().isEmpty()) return listar();
+        List<Producto> lista = new ArrayList<>();
+        String sql = """
+            SELECT * FROM producto
+            WHERE UPPER(nombre) LIKE UPPER(?)
+               OR UPPER(codigo) LIKE UPPER(?)
+               OR UPPER(categoria) LIKE UPPER(?)
+            ORDER BY id_producto
+            """;
+        String patron = "%" + filtro.trim() + "%";
+        try (Connection cn = ConexionRepository.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setString(1, patron);
+            ps.setString(2, patron);
+            ps.setString(3, patron);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return lista;
+    }
+
     @Override
     public boolean actualizar(Producto p) {
         String sql = """
-            UPDATE producto SET codigo=?,nombre=?,descripcion=?,precio=?,stock=?,categoria=?
+            UPDATE producto SET codigo=?,nombre=?,categoria=?,presentacion=?,unidad_medida=?,precio_compra=?,
+                                precio_minorista=?,precio_mayorista=?,stock_actual=?,stock_minimo=?,estado=?
             WHERE id_producto=?
             """;
         try (Connection cn = ConexionRepository.getConexion();
              PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, p.getCodigo());
-            ps.setString(2, p.getNombre());
-            ps.setString(3, p.getDescripcion());
-            ps.setDouble(4, p.getPrecio());
-            ps.setInt(5, p.getStock() != null ? p.getStock() : 0);
-            ps.setString(6, p.getCategoria());
-            ps.setInt(7, Integer.parseInt(p.getId()));
+            prepararParametros(ps, p, true);
             return ps.executeUpdate() > 0;
         } catch (Exception e) { e.printStackTrace(); }
         return false;
@@ -71,7 +85,7 @@ public class ProductoModel implements CRUDUsecase<Producto> {
     }
 
     public Producto buscarPorCodigo(String codigo) {
-        String sql = "SELECT * FROM producto WHERE codigo=?";
+        String sql = "SELECT * FROM producto WHERE UPPER(codigo)=UPPER(?)";
         try (Connection cn = ConexionRepository.getConexion();
              PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, codigo);
@@ -83,18 +97,38 @@ public class ProductoModel implements CRUDUsecase<Producto> {
     }
 
     public String generarSiguienteCodigo() {
-        return CodigoAutomaticoModel.generarSiguienteCodigo("producto", "codigo", "P");
+        return CodigoAutomaticoModel.generarSiguienteCodigo("producto", "codigo", "PROD");
     }
 
-    private Producto mapear(ResultSet rs) throws Exception {
+    private void prepararParametros(PreparedStatement ps, Producto p, boolean incluirId) throws SQLException {
+        ps.setString(1, p.getCodigo());
+        ps.setString(2, p.getNombre());
+        ps.setString(3, p.getCategoria());
+        ps.setString(4, p.getPresentacion());
+        ps.setString(5, p.getUnidadMedida());
+        ps.setDouble(6, p.getPrecioCompra());
+        ps.setDouble(7, p.getPrecioMinorista());
+        ps.setDouble(8, p.getPrecioMayorista());
+        ps.setInt(9, p.getStockActual() != null ? p.getStockActual() : 0);
+        ps.setInt(10, p.getStockMinimo() != null ? p.getStockMinimo() : 0);
+        ps.setString(11, p.getEstado());
+        if (incluirId) ps.setInt(12, p.getIdProducto());
+    }
+
+    private Producto mapear(ResultSet rs) throws SQLException {
         Producto p = new Producto();
-        p.setId(String.valueOf(rs.getInt("id_producto")));
+        p.setIdProducto(rs.getInt("id_producto"));
         p.setCodigo(rs.getString("codigo"));
         p.setNombre(rs.getString("nombre"));
-        p.setDescripcion(rs.getString("descripcion"));
-        p.setPrecio(rs.getDouble("precio"));
-        p.setStock(rs.getInt("stock"));
         p.setCategoria(rs.getString("categoria"));
+        p.setPresentacion(rs.getString("presentacion"));
+        p.setUnidadMedida(rs.getString("unidad_medida"));
+        p.setPrecioCompra(rs.getDouble("precio_compra"));
+        p.setPrecioMinorista(rs.getDouble("precio_minorista"));
+        p.setPrecioMayorista(rs.getDouble("precio_mayorista"));
+        p.setStockActual(rs.getInt("stock_actual"));
+        p.setStockMinimo(rs.getInt("stock_minimo"));
+        p.setEstado(rs.getString("estado"));
         return p;
     }
 }

@@ -14,10 +14,15 @@ CREATE TABLE IF NOT EXISTS producto (
     id_producto SERIAL PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE,
     nombre VARCHAR(100) NOT NULL,
-    descripcion VARCHAR(100),
-    precio NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    stock INTEGER NOT NULL DEFAULT 0,
-    categoria VARCHAR(200)
+    categoria VARCHAR(200) NOT NULL,
+    presentacion VARCHAR(120),
+    unidad_medida VARCHAR(50),
+    precio_compra NUMERIC(10, 2) NOT NULL DEFAULT 0,
+    precio_minorista NUMERIC(10, 2) NOT NULL DEFAULT 0,
+    precio_mayorista NUMERIC(10, 2) NOT NULL DEFAULT 0,
+    stock_actual INTEGER NOT NULL DEFAULT 0,
+    stock_minimo INTEGER NOT NULL DEFAULT 0,
+    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
 );
 
 CREATE TABLE IF NOT EXISTS servicio (
@@ -157,13 +162,12 @@ VALUES
 
 -- PRODUCTOS
 INSERT INTO producto
-(codigo, nombre, descripcion, precio, stock, categoria)
+(codigo, nombre, categoria, presentacion, unidad_medida, precio_compra, precio_minorista, precio_mayorista, stock_actual, stock_minimo, estado)
 VALUES
-('P001','Mouse Logitech M90','Mouse USB',25.00,30,'Periféricos'),
-('P002','Teclado Genius','Teclado USB',45.00,20,'Periféricos'),
-('P003','Monitor Samsung 24','Monitor LED Full HD',650.00,10,'Monitores'),
-('P004','Disco SSD Kingston 480GB','SSD SATA',180.00,15,'Almacenamiento'),
-('P005','Memoria RAM 8GB DDR4','RAM DDR4',120.00,25,'Componentes');
+('CAR001','Caramelos surtidos','Golosinas','Bolsa 150 unidades','Bolsa',5.50,7.50,6.80,40,10,'Activo'),
+('CHO001','Chocolate multipack','Golosinas','Caja','Caja',14.00,18.00,16.50,25,8,'Activo'),
+('GAL001','Galletas vainilla','Golosinas','Paquete 6 unidades','Paquete',3.80,5.00,4.50,60,15,'Activo'),
+('BEB001','Gaseosa personal','Bebidas','Pack','Pack',20.00,24.00,22.50,30,10,'Activo');
 
 -- SERVICIOS
 INSERT INTO servicio
