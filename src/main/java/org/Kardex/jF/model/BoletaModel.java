@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +19,41 @@ public class BoletaModel {
     public record VentaHistorial(int idBoleta, String numero, String tipoComprobante, int idCliente,
             String cliente, String dniRuc, String metodoPago, LocalDateTime fecha, double subtotal,
             double igv, double total) {}
-
+    public record DetalleHistorial(String tipoItem, String descripcion, int cantidad,
+            double precioUnitario, double importe) {}
 
     public List<VentaHistorial> listarHistorialVentas(Integer idCliente) {
+        return buscarHistorialVentas(idCliente, null, null);
+    }
+
+    public List<VentaHistorial> buscarHistorialVentas(Integer idCliente, LocalDate fecha, String comprobante) {
         List<VentaHistorial> ventas = new ArrayList<>();
-        String sql = """
+        StringBuilder sql = new StringBuilder("""
             SELECT b.id_boleta, b.numero, b.tipo_comprobante, b.id_cliente,
                    TRIM(c.nombre || ' ' || COALESCE(c.apellido, '')) AS cliente,
                    b.dni_ruc, b.metodo_pago, b.fecha, b.subtotal, b.igv, b.total
             FROM boleta b
             JOIN cliente c ON b.id_cliente = c.id_cliente
-            """
-            + (idCliente == null ? "" : " WHERE b.id_cliente = ?")
-            + " ORDER BY b.fecha DESC, b.id_boleta DESC";
+            WHERE 1 = 1
+            """);
+        List<Object> parametros = new ArrayList<>();
+        if (idCliente != null) {
+            sql.append(" AND b.id_cliente = ?");
+            parametros.add(idCliente);
+        }
+        if (fecha != null) {
+            sql.append(" AND DATE(b.fecha) = ?");
+            parametros.add(java.sql.Date.valueOf(fecha));
+        }
+        if (comprobante != null && !comprobante.isBlank()) {
+            sql.append(" AND UPPER(b.numero) LIKE UPPER(?)");
+            parametros.add("%" + comprobante.trim() + "%");
+        }
+        sql.append(" ORDER BY b.fecha DESC, b.id_boleta DESC");
         try (Connection cn = ConexionRepository.getConexion();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            if (idCliente != null) {
-                ps.setInt(1, idCliente);
+             PreparedStatement ps = cn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < parametros.size(); i++) {
+                ps.setObject(i + 1, parametros.get(i));
             }
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -56,6 +75,33 @@ public class BoletaModel {
             e.printStackTrace();
         }
         return ventas;
+    }
+
+    public List<DetalleHistorial> listarDetalleHistorial(int idBoleta) {
+        List<DetalleHistorial> detalles = new ArrayList<>();
+        String sql = """
+            SELECT tipo_item, descripcion, cantidad, precio_unitario, importe
+            FROM boleta_detalle
+            WHERE id_boleta = ?
+            ORDER BY id_boleta_detalle
+            """;
+        try (Connection cn = ConexionRepository.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, idBoleta);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    detalles.add(new DetalleHistorial(
+                            rs.getString("tipo_item"),
+                            rs.getString("descripcion"),
+                            rs.getInt("cantidad"),
+                            rs.getDouble("precio_unitario"),
+                            rs.getDouble("importe")));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return detalles;
     }
 
     public List<DetallePendiente> listarServiciosPendientes(int idCliente) {
