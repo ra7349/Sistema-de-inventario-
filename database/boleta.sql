@@ -112,14 +112,19 @@ select * from cliente_servicio;
 
 CREATE TABLE IF NOT EXISTS movimiento_inventario (
     id_movimiento SERIAL PRIMARY KEY,
-    id_repuesto INTEGER NOT NULL,
-    tipo VARCHAR(20) NOT NULL,
+    id_producto INTEGER NOT NULL,
+    tipo_movimiento VARCHAR(20) NOT NULL,
     cantidad INTEGER NOT NULL,
     motivo VARCHAR(200),
     fecha DATE NOT NULL DEFAULT CURRENT_DATE,
+    observacion TEXT,
 
-    CONSTRAINT fk_movimiento_repuesto
-        FOREIGN KEY (id_repuesto) REFERENCES repuesto(id_repuesto)
+    CONSTRAINT fk_movimiento_producto
+        FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
+    CONSTRAINT chk_movimiento_tipo
+        CHECK (tipo_movimiento IN ('Entrada', 'Salida', 'Ajuste')),
+    CONSTRAINT chk_movimiento_cantidad
+        CHECK (cantidad > 0)
 );
 
 CREATE TABLE IF NOT EXISTS boleta (
@@ -163,7 +168,7 @@ CREATE INDEX IF NOT EXISTS idx_cliente_servicio_cliente ON cliente_servicio(id_c
 CREATE INDEX IF NOT EXISTS idx_cliente_servicio_facturado ON cliente_servicio(facturado);
 CREATE INDEX IF NOT EXISTS idx_repuesto_codigo ON repuesto(codigo);
 CREATE INDEX IF NOT EXISTS idx_repuesto_estado ON repuesto(estado);
-CREATE INDEX IF NOT EXISTS idx_movimiento_repuesto ON movimiento_inventario(id_repuesto);
+CREATE INDEX IF NOT EXISTS idx_movimiento_producto ON movimiento_inventario(id_producto);
 CREATE INDEX IF NOT EXISTS idx_boleta_cliente ON boleta(id_cliente);
 CREATE INDEX IF NOT EXISTS idx_boleta_fecha ON boleta(fecha);
 CREATE INDEX IF NOT EXISTS idx_boleta_detalle_boleta ON boleta_detalle(id_boleta);
@@ -243,13 +248,13 @@ VALUES
 
 -- MOVIMIENTOS DE INVENTARIO
 INSERT INTO movimiento_inventario
-(id_repuesto, tipo, cantidad, motivo)
+(id_producto, tipo_movimiento, cantidad, motivo, observacion)
 VALUES
-(1,'ENTRADA',10,'Compra proveedor'),
-(2,'ENTRADA',15,'Compra proveedor'),
-(3,'SALIDA',2,'Reparación equipo'),
-(4,'SALIDA',5,'Mantenimiento'),
-(5,'ENTRADA',3,'Reposición stock');
+(1,'Entrada',10,'Compra de mercadería','Abastecimiento inicial'),
+(2,'Entrada',15,'Compra de mercadería','Abastecimiento inicial'),
+(3,'Salida',2,'Venta','Despacho de productos'),
+(4,'Salida',5,'Merma','Producto no apto para venta'),
+(1,'Ajuste',3,'Ajuste positivo','Corrección de inventario físico');
 
 -- BOLETAS
 INSERT INTO boleta
