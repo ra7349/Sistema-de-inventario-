@@ -43,10 +43,4 @@ public class MovimientoInventario {
     public String getObservacion() { return observacion; }
     public void setObservacion(String observacion) { this.observacion = observacion; }
 
-    public Integer getIdRepuesto() { return idProducto; }
-    public void setIdRepuesto(Integer idRepuesto) { this.idProducto = idRepuesto; }
-    public String getCodigoRepuesto() { return codigoProducto; }
-    public void setCodigoRepuesto(String codigoRepuesto) { this.codigoProducto = codigoRepuesto; }
-    public String getNombreRepuesto() { return nombreProducto; }
-    public void setNombreRepuesto(String nombreRepuesto) { this.nombreProducto = nombreRepuesto; }
 }

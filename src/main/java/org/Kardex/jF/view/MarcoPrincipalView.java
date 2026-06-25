@@ -102,15 +102,12 @@ public class MarcoPrincipalView extends JFrame {
         itemInicio.addActionListener(e -> cargarIndicadores());
         itemRegistrarProducto.addActionListener(e -> new ProductoListarView().setVisible(true));
         itemListarProductos.addActionListener(e -> new ProductoListarView().setVisible(true));
-        itemGestionarCategorias.addActionListener(e -> new GestionServicioView().setVisible(true));
-        itemRegistrarCliente.addActionListener(e -> new ClienteListarView().setVisible(true));
-        itemModificarCliente.addActionListener(e -> new ClienteListarView().setVisible(true));
         itemGestionarCategorias.addActionListener(e -> new CategoriaView().setVisible(true));
         itemRegistrarCliente.addActionListener(e -> new FormularioCliente(this).setVisible(true));
         itemModificarCliente.addActionListener(e -> new ModificarClienteView(this).setVisible(true));
         itemListarClientes.addActionListener(e -> new ClienteListarView().setVisible(true));
         itemProveedores.addActionListener(e -> new ProveedorListarView().setVisible(true));
-        itemStock.addActionListener(e -> new RepuestosView().setVisible(true));
+        itemStock.addActionListener(e -> new ProductoListarView().setVisible(true));
         itemMovimiento.addActionListener(e -> new MovimientosView().setVisible(true));
         itemCambiarContraseña.addActionListener(e -> new ActualizarcontraseñaView().setVisible(true));
         itemGenerarVenta.addActionListener(e -> new VentasView().setVisible(true));

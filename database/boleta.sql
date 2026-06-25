@@ -1,281 +1,183 @@
-CREATE TABLE IF NOT EXISTS cliente (
+-- Base de datos Golocentro - Sistema de Inventario
+-- Tablas del dominio: categorias, productos, clientes, tipos_cliente, proveedores,
+-- movimientos_inventario, ventas, detalle_ventas y precios_producto.
+
+DROP TABLE IF EXISTS detalle_ventas CASCADE;
+DROP TABLE IF EXISTS ventas CASCADE;
+DROP TABLE IF EXISTS precios_producto CASCADE;
+DROP TABLE IF EXISTS movimiento_inventario CASCADE;
+DROP TABLE IF EXISTS producto CASCADE;
+DROP TABLE IF EXISTS categoria CASCADE;
+DROP TABLE IF EXISTS cliente CASCADE;
+DROP TABLE IF EXISTS tipo_cliente CASCADE;
+DROP TABLE IF EXISTS proveedor CASCADE;
+DROP TABLE IF EXISTS usuario CASCADE;
+
+CREATE TABLE tipo_cliente (
+    id_tipo_cliente SERIAL PRIMARY KEY,
+    nombre VARCHAR(40) NOT NULL UNIQUE,
+    descripcion VARCHAR(160),
+    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
+);
+
+CREATE TABLE cliente (
     id_cliente SERIAL PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE,
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100),
     telefono BIGINT,
-    correo VARCHAR(100),
-    direccion VARCHAR(200),
-    tipo_cliente VARCHAR(50) NOT NULL DEFAULT 'Minorista',
-    ruc BIGINT
+    correo VARCHAR(120),
+    direccion VARCHAR(180),
+    tipo_cliente VARCHAR(40) NOT NULL,
+    ruc BIGINT,
+    CONSTRAINT fk_cliente_tipo FOREIGN KEY (tipo_cliente) REFERENCES tipo_cliente(nombre)
 );
 
-
-
-CREATE TABLE IF NOT EXISTS proveedor (
-    id_proveedor SERIAL PRIMARY KEY,
-    codigo VARCHAR(20) NOT NULL UNIQUE,
-    razon_social VARCHAR(150) NOT NULL,
-    ruc BIGINT NOT NULL,
-    telefono BIGINT,
-    correo VARCHAR(100),
-    direccion VARCHAR(200),
-    contacto VARCHAR(120),
-    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
-);
-
-CREATE TABLE IF NOT EXISTS categoria (
+CREATE TABLE categoria (
     id_categoria SERIAL PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE,
-    nombre VARCHAR(100) NOT NULL UNIQUE,
-    descripcion VARCHAR(200),
+    nombre VARCHAR(80) NOT NULL UNIQUE,
+    descripcion VARCHAR(180),
     estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
 );
 
-CREATE TABLE IF NOT EXISTS producto (
+CREATE TABLE proveedor (
+    id_proveedor SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    razon_social VARCHAR(140) NOT NULL,
+    ruc BIGINT UNIQUE,
+    telefono BIGINT,
+    correo VARCHAR(120),
+    direccion VARCHAR(180),
+    contacto VARCHAR(100),
+    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
+);
+
+CREATE TABLE producto (
     id_producto SERIAL PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE,
-    nombre VARCHAR(100) NOT NULL,
-    categoria VARCHAR(200) NOT NULL,
-    presentacion VARCHAR(120),
-    unidad_medida VARCHAR(50),
-    precio_compra NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    precio_minorista NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    precio_mayorista NUMERIC(10, 2) NOT NULL DEFAULT 0,
+    nombre VARCHAR(120) NOT NULL,
+    categoria VARCHAR(80) NOT NULL,
+    presentacion VARCHAR(80),
+    unidad_medida VARCHAR(40),
+    precio_compra NUMERIC(10,2) NOT NULL DEFAULT 0,
+    precio_minorista NUMERIC(10,2) NOT NULL DEFAULT 0,
+    precio_mayorista NUMERIC(10,2) NOT NULL DEFAULT 0,
     stock_actual INTEGER NOT NULL DEFAULT 0,
     stock_minimo INTEGER NOT NULL DEFAULT 0,
+    estado VARCHAR(20) NOT NULL DEFAULT 'Activo',
+    CONSTRAINT fk_producto_categoria FOREIGN KEY (categoria) REFERENCES categoria(nombre)
+);
+
+CREATE TABLE precios_producto (
+    id_precio_producto SERIAL PRIMARY KEY,
+    id_producto INTEGER NOT NULL REFERENCES producto(id_producto),
+    tipo_cliente VARCHAR(40) NOT NULL REFERENCES tipo_cliente(nombre),
+    precio NUMERIC(10,2) NOT NULL,
+    fecha_inicio DATE NOT NULL DEFAULT CURRENT_DATE,
+    fecha_fin DATE,
     estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
 );
 
-CREATE TABLE IF NOT EXISTS servicio (
-    id_servicio SERIAL PRIMARY KEY,
-    codigo VARCHAR(10) NOT NULL UNIQUE,
-    servicio VARCHAR(200) NOT NULL,
-    precio NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
-);
-
-CREATE TABLE IF NOT EXISTS repuesto (
-    id_repuesto SERIAL PRIMARY KEY,
-    codigo VARCHAR(30) NOT NULL UNIQUE,
-    nombre VARCHAR(120) NOT NULL,
-    marca VARCHAR(80),
-    categoria VARCHAR(80) NOT NULL,
-    stock INTEGER NOT NULL DEFAULT 0,
-    precio_compra NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    precio_venta NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
-);
-
-CREATE TABLE IF NOT EXISTS usuario (
-    id_usuario SERIAL PRIMARY KEY,
-    usuario VARCHAR(50) NOT NULL UNIQUE,
-    contraseña VARCHAR(100) NOT NULL
-);
-
--- 2. Tablas relacionadas con clientes, servicios y repuestos
-CREATE TABLE IF NOT EXISTS equipo (
-    id_equipo SERIAL PRIMARY KEY,
-    codigo VARCHAR(20) NOT NULL UNIQUE,
-    marca VARCHAR(80),
-    modelo VARCHAR(80),
-    numero_serie VARCHAR(80),
-    tipo_equipo VARCHAR(80),
-    estado BOOLEAN NOT NULL DEFAULT TRUE,
-    fecha_ingreso DATE NOT NULL DEFAULT CURRENT_DATE,
-    id_cliente INTEGER NOT NULL,
-
-    CONSTRAINT fk_equipo_cliente
-        FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente) ON DELETE RESTRICT
-);
-
-CREATE TABLE IF NOT EXISTS cliente_servicio (
-    id_cliente_servicio SERIAL PRIMARY KEY,
-    id_cliente INTEGER NOT NULL,
-    id_servicio INTEGER NOT NULL,
-    numero_orden VARCHAR(30) NOT NULL,
-    equipo VARCHAR(150),
-    falla TEXT,
-    estado VARCHAR(30) NOT NULL DEFAULT 'Pendiente',
-    precio_unitario NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    facturado BOOLEAN NOT NULL DEFAULT FALSE,
-    fecha_aplicacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fecha_facturacion TIMESTAMP,
-
-    CONSTRAINT fk_cliente_servicio_cliente
-        FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
-    CONSTRAINT fk_cliente_servicio_servicio
-        FOREIGN KEY (id_servicio) REFERENCES servicio(id_servicio)
-);
-
-select * from cliente_servicio;
-
-CREATE TABLE IF NOT EXISTS movimiento_inventario (
+CREATE TABLE movimiento_inventario (
     id_movimiento SERIAL PRIMARY KEY,
-    id_producto INTEGER NOT NULL,
+    id_producto INTEGER NOT NULL REFERENCES producto(id_producto),
     tipo_movimiento VARCHAR(20) NOT NULL,
-    cantidad INTEGER NOT NULL,
-    motivo VARCHAR(200),
+    cantidad INTEGER NOT NULL CHECK (cantidad > 0),
+    motivo VARCHAR(120),
     fecha DATE NOT NULL DEFAULT CURRENT_DATE,
-    observacion TEXT,
-
-    CONSTRAINT fk_movimiento_producto
-        FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
-    CONSTRAINT chk_movimiento_tipo
-        CHECK (tipo_movimiento IN ('Entrada', 'Salida', 'Ajuste')),
-    CONSTRAINT chk_movimiento_cantidad
-        CHECK (cantidad > 0)
+    observacion VARCHAR(220)
 );
 
-CREATE TABLE IF NOT EXISTS boleta (
-    id_boleta SERIAL PRIMARY KEY,
+CREATE TABLE ventas (
+    id_venta SERIAL PRIMARY KEY,
     numero VARCHAR(30) NOT NULL UNIQUE,
-    tipo_comprobante VARCHAR(20) NOT NULL,
-    id_cliente INTEGER NOT NULL,
+    tipo_comprobante VARCHAR(30) NOT NULL,
+    id_cliente INTEGER NOT NULL REFERENCES cliente(id_cliente),
     dni_ruc VARCHAR(20),
     metodo_pago VARCHAR(40) NOT NULL,
     fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    subtotal NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    igv NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    total NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    estado VARCHAR(20) NOT NULL DEFAULT 'Pagado',
-
-    CONSTRAINT fk_boleta_cliente
-        FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente)
+    subtotal NUMERIC(10,2) NOT NULL DEFAULT 0,
+    igv NUMERIC(10,2) NOT NULL DEFAULT 0,
+    total NUMERIC(10,2) NOT NULL DEFAULT 0,
+    estado VARCHAR(20) NOT NULL DEFAULT 'Pagado'
 );
 
-CREATE TABLE IF NOT EXISTS boleta_detalle (
-    id_boleta_detalle SERIAL PRIMARY KEY,
-    id_boleta INTEGER NOT NULL,
-    tipo_item VARCHAR(20) NOT NULL,
-    descripcion TEXT NOT NULL,
-    cantidad INTEGER NOT NULL DEFAULT 1,
-    precio_unitario NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    importe NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    id_cliente_servicio INTEGER,
-    id_repuesto INTEGER,
-    id_producto INTEGER,
-
-    CONSTRAINT fk_boleta_detalle_boleta
-        FOREIGN KEY (id_boleta) REFERENCES boleta(id_boleta) ON DELETE CASCADE,
-    CONSTRAINT fk_boleta_detalle_cliente_servicio
-        FOREIGN KEY (id_cliente_servicio) REFERENCES cliente_servicio(id_cliente_servicio),
-    CONSTRAINT fk_boleta_detalle_repuesto
-        FOREIGN KEY (id_repuesto) REFERENCES repuesto(id_repuesto),
-    CONSTRAINT fk_boleta_detalle_producto
-        FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
+CREATE TABLE detalle_ventas (
+    id_detalle_venta SERIAL PRIMARY KEY,
+    id_venta INTEGER NOT NULL REFERENCES ventas(id_venta) ON DELETE CASCADE,
+    id_producto INTEGER NOT NULL REFERENCES producto(id_producto),
+    descripcion VARCHAR(180) NOT NULL,
+    cantidad INTEGER NOT NULL CHECK (cantidad > 0),
+    precio_unitario NUMERIC(10,2) NOT NULL,
+    importe NUMERIC(10,2) NOT NULL
 );
 
--- 3. Índices simples para búsquedas comunes
-CREATE INDEX IF NOT EXISTS idx_cliente_servicio_cliente ON cliente_servicio(id_cliente);
-CREATE INDEX IF NOT EXISTS idx_cliente_servicio_facturado ON cliente_servicio(facturado);
-CREATE INDEX IF NOT EXISTS idx_repuesto_codigo ON repuesto(codigo);
-CREATE INDEX IF NOT EXISTS idx_repuesto_estado ON repuesto(estado);
-CREATE INDEX IF NOT EXISTS idx_movimiento_producto ON movimiento_inventario(id_producto);
-CREATE INDEX IF NOT EXISTS idx_boleta_cliente ON boleta(id_cliente);
-CREATE INDEX IF NOT EXISTS idx_boleta_fecha ON boleta(fecha);
-CREATE INDEX IF NOT EXISTS idx_boleta_detalle_boleta ON boleta_detalle(id_boleta);
-CREATE INDEX IF NOT EXISTS idx_boleta_detalle_producto ON boleta_detalle(id_producto);
+CREATE TABLE usuario (
+    id_usuario SERIAL PRIMARY KEY,
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(120) NOT NULL,
+    nombre VARCHAR(100),
+    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
+);
 
-INSERT INTO usuario (usuario, contraseña)
-VALUES ('admin', '123456')
-ON CONFLICT (usuario) DO NOTHING;
+CREATE INDEX idx_producto_categoria ON producto(categoria);
+CREATE INDEX idx_movimiento_producto ON movimiento_inventario(id_producto);
+CREATE INDEX idx_ventas_cliente ON ventas(id_cliente);
+CREATE INDEX idx_detalle_ventas_producto ON detalle_ventas(id_producto);
 
--- CLIENTES
-INSERT INTO cliente
-(codigo, nombre, apellido, telefono, correo, direccion, tipo_cliente, ruc)
-VALUES
-('C001','Juan','Pérez',987654321,'juan@gmail.com','Av. Los Incas 123','Minorista',NULL),
-('C002','María','Quispe',912345678,'maria@gmail.com','Av. Cultura 456','Minorista',NULL),
-('C003','Carlos','Huamán',923456789,'carlos@gmail.com','Urb. Magisterio','Minorista',NULL),
-('C004','Tech Solutions SAC',NULL,984567123,'ventas@techsolutions.com','Parque Industrial','Mayorista',20601234567),
-('C005','Innova Perú SAC',NULL,976543210,'contacto@innova.com','Av. El Sol 789','Mayorista',20598765432);
+INSERT INTO tipo_cliente (nombre, descripcion) VALUES
+('Minorista', 'Clientes con compras por unidad'),
+('Mayorista', 'Clientes con compras por volumen');
 
+INSERT INTO cliente (codigo, nombre, apellido, telefono, correo, direccion, tipo_cliente, ruc) VALUES
+('C001', 'María', 'Quispe', 987654321, 'maria.quispe@example.com', 'Av. Los Dulces 120', 'Minorista', NULL),
+('C002', 'Bodega San Martín', '', 987111222, 'compras@bodegasanmartin.pe', 'Jr. Comercio 455', 'Mayorista', 20500111222),
+('C003', 'Carlos', 'Ramírez', 986222333, 'carlos.ramirez@example.com', 'Calle Central 88', 'Minorista', NULL),
+('C004', 'Distribuidora El Sol', '', 985333444, 'pedidos@elsol.pe', 'Av. Mercado 700', 'Mayorista', 20600999888);
 
--- CATEGORÍAS
-INSERT INTO categoria
-(codigo, nombre, descripcion, estado)
-VALUES
-('CAT001','Golosinas','Dulces, caramelos y productos de confitería','Activo'),
-('CAT002','Bebidas','Bebidas embotelladas y en pack','Activo'),
-('CAT003','Galletas','Galletas dulces y saladas','Activo'),
-('CAT004','Snacks','Piqueos, chips y productos similares','Activo')
-ON CONFLICT (codigo) DO NOTHING;
+INSERT INTO categoria (codigo, nombre, descripcion) VALUES
+('CAT001', 'Caramelos', 'Caramelos surtidos y confites'),
+('CAT002', 'Chocolates', 'Chocolates en barra y bombones'),
+('CAT003', 'Galletas', 'Galletas dulces y rellenas'),
+('CAT004', 'Gomitas', 'Gomitas frutales y ácidas'),
+('CAT005', 'Bebidas', 'Bebidas azucaradas embotelladas');
 
--- PRODUCTOS
-INSERT INTO producto
-(codigo, nombre, categoria, presentacion, unidad_medida, precio_compra, precio_minorista, precio_mayorista, stock_actual, stock_minimo, estado)
-VALUES
-('CAR001','Caramelos surtidos','Golosinas','Bolsa 150 unidades','Bolsa',5.50,7.50,6.80,40,10,'Activo'),
-('CHO001','Chocolate multipack','Golosinas','Caja','Caja',14.00,18.00,16.50,25,8,'Activo'),
-('GAL001','Galletas vainilla','Golosinas','Paquete 6 unidades','Paquete',3.80,5.00,4.50,60,15,'Activo'),
-('BEB001','Gaseosa personal','Bebidas','Pack','Pack',20.00,24.00,22.50,30,10,'Activo');
+INSERT INTO proveedor (codigo, razon_social, ruc, telefono, correo, direccion, contacto) VALUES
+('P001', 'Dulces Andinos S.A.C.', 20444555666, 984100200, 'ventas@dulcesandinos.pe', 'Av. Industria 150', 'Rosa Paredes'),
+('P002', 'ChocoPerú Distribuciones', 20555666777, 984200300, 'pedidos@chocoperu.pe', 'Jr. Cacao 321', 'Luis Torres'),
+('P003', 'Bebidas Golosas S.R.L.', 20666777888, 984300400, 'logistica@bebidasgolosas.pe', 'Av. Refrescos 980', 'Ana Salas');
 
--- SERVICIOS
-INSERT INTO servicio
-(codigo, servicio, precio, estado)
-VALUES
-('S001','Mantenimiento Preventivo',50.00,'Activo'),
-('S002','Formateo e Instalación de SO',80.00,'Activo'),
-('S003','Cambio de Pantalla Laptop',250.00,'Activo'),
-('S004','Limpieza Interna de PC',40.00,'Activo'),
-('S005','Diagnóstico Técnico',30.00,'Activo');
--- REPUESTOS
-INSERT INTO repuesto
-(codigo, nombre, marca, categoria, stock, precio_compra, precio_venta, estado)
-VALUES
-('R001','Disco SSD 240GB','Kingston','Almacenamiento',20,90.00,120.00,'Activo'),
-('R002','Memoria RAM 8GB DDR4','Corsair','Memoria',15,80.00,110.00,'Activo'),
-('R003','Fuente Poder 500W','Thermaltake','Fuente',10,120.00,160.00,'Activo'),
-('R004','Ventilador CPU','Cooler Master','Refrigeración',25,20.00,35.00,'Activo'),
-('R005','Pantalla Laptop 15.6','HP','Pantallas',8,180.00,250.00,'Activo');
+INSERT INTO producto (codigo, nombre, categoria, presentacion, unidad_medida, precio_compra, precio_minorista, precio_mayorista, stock_actual, stock_minimo) VALUES
+('PROD001', 'Caramelos surtidos Frutal', 'Caramelos', 'Bolsa 1 kg', 'bolsa', 8.50, 12.00, 10.20, 80, 15),
+('PROD002', 'Chocolate clásico', 'Chocolates', 'Caja x 24 unidades', 'caja', 28.00, 42.00, 36.00, 45, 10),
+('PROD003', 'Galletas vainilla', 'Galletas', 'Paquete x 12', 'paquete', 14.50, 22.00, 18.50, 65, 12),
+('PROD004', 'Gomitas frutales', 'Gomitas', 'Bolsa 500 g', 'bolsa', 6.80, 10.50, 8.90, 70, 15),
+('PROD005', 'Bebida azucarada cola', 'Bebidas', 'Botella 500 ml', 'botella', 1.80, 3.00, 2.40, 120, 24);
 
--- EQUIPOS
-INSERT INTO equipo
-(codigo, marca, modelo, numero_serie, tipo_equipo, estado, fecha_ingreso, id_cliente)
-VALUES
-('E001','HP','15-DW3000','HP123456','Laptop',TRUE,CURRENT_DATE,1),
-('E002','Lenovo','IdeaPad 3','LN654321','Laptop',TRUE,CURRENT_DATE,2),
-('E003','Dell','OptiPlex 7090','DL456789','PC Escritorio',TRUE,CURRENT_DATE,3),
-('E004','Asus','ROG Strix','AS741258','Laptop',TRUE,CURRENT_DATE,1),
-('E005','Acer','Aspire 5','AC852963','Laptop',TRUE,CURRENT_DATE,2);
+INSERT INTO precios_producto (id_producto, tipo_cliente, precio) VALUES
+(1, 'Minorista', 12.00), (1, 'Mayorista', 10.20),
+(2, 'Minorista', 42.00), (2, 'Mayorista', 36.00),
+(3, 'Minorista', 22.00), (3, 'Mayorista', 18.50),
+(4, 'Minorista', 10.50), (4, 'Mayorista', 8.90),
+(5, 'Minorista', 3.00), (5, 'Mayorista', 2.40);
 
--- ÓRDENES / CLIENTE_SERVICIO
-INSERT INTO cliente_servicio
-(id_cliente, id_servicio, numero_orden, equipo, falla, estado, precio_unitario)
-VALUES
-(1,1,'OS001','HP 15-DW3000','Equipo lento','Recibido',50.00),
-(2,2,'OS002','Lenovo IdeaPad 3','Sistema operativo dañado','Reparación',80.00),
-(3,5,'OS003','Dell OptiPlex 7090','No enciende','Listo',30.00),
-(1,4,'OS004','Asus ROG Strix','Acumulación de polvo','Entregado',40.00),
-(2,3,'OS005','Acer Aspire 5','Pantalla rota','Reparación',250.00);
+INSERT INTO movimiento_inventario (id_producto, tipo_movimiento, cantidad, motivo, observacion) VALUES
+(1, 'Entrada', 80, 'Carga inicial', 'Inventario inicial Golocentro'),
+(2, 'Entrada', 45, 'Carga inicial', 'Inventario inicial Golocentro'),
+(3, 'Entrada', 65, 'Carga inicial', 'Inventario inicial Golocentro'),
+(4, 'Entrada', 70, 'Carga inicial', 'Inventario inicial Golocentro'),
+(5, 'Entrada', 120, 'Carga inicial', 'Inventario inicial Golocentro');
 
--- MOVIMIENTOS DE INVENTARIO
-INSERT INTO movimiento_inventario
-(id_producto, tipo_movimiento, cantidad, motivo, observacion)
-VALUES
-(1,'Entrada',10,'Compra de mercadería','Abastecimiento inicial'),
-(2,'Entrada',15,'Compra de mercadería','Abastecimiento inicial'),
-(3,'Salida',2,'Venta','Despacho de productos'),
-(4,'Salida',5,'Merma','Producto no apto para venta'),
-(1,'Ajuste',3,'Ajuste positivo','Corrección de inventario físico');
+INSERT INTO ventas (numero, tipo_comprobante, id_cliente, dni_ruc, metodo_pago, subtotal, igv, total) VALUES
+('B0001', 'Boleta', 1, NULL, 'Efectivo', 22.50, 4.05, 26.55),
+('F0002', 'Factura', 2, '20500111222', 'Transferencia', 54.50, 9.81, 64.31);
 
--- BOLETAS
-INSERT INTO boleta
-(numero, tipo_comprobante, id_cliente, dni_ruc, metodo_pago, subtotal, igv, total)
-VALUES
-('B001','Boleta',1,'76543210','Efectivo',50.00,9.00,59.00),
-('B002','Boleta',2,'71234567','Yape',80.00,14.40,94.40),
-('B003','Boleta',3,'72345678','Tarjeta',30.00,5.40,35.40),
-('B004','Boleta',1,'76543210','Efectivo',40.00,7.20,47.20),
-('B005','Factura',4,'20601234567','Transferencia',250.00,45.00,295.00);
+INSERT INTO detalle_ventas (id_venta, id_producto, descripcion, cantidad, precio_unitario, importe) VALUES
+(1, 1, 'PROD001 - Caramelos surtidos Frutal', 1, 12.00, 12.00),
+(1, 4, 'PROD004 - Gomitas frutales', 1, 10.50, 10.50),
+(2, 2, 'PROD002 - Chocolate clásico', 1, 36.00, 36.00),
+(2, 3, 'PROD003 - Galletas vainilla', 1, 18.50, 18.50);
 
--- DETALLE BOLETA
-INSERT INTO boleta_detalle
-(id_boleta, tipo_item, descripcion, cantidad, precio_unitario, importe, id_cliente_servicio, id_repuesto)
-VALUES
-(1,'SERVICIO','Mantenimiento Preventivo',1,50.00,50.00,1,NULL),
-(2,'SERVICIO','Formateo e Instalación de SO',1,80.00,80.00,2,NULL),
-(3,'SERVICIO','Diagnóstico Técnico',1,30.00,30.00,3,NULL),
-(4,'SERVICIO','Limpieza Interna de PC',1,40.00,40.00,4,NULL),
-(5,'SERVICIO','Cambio de Pantalla Laptop',1,250.00,250.00,5,5);
+INSERT INTO usuario (usuario, password, nombre) VALUES
+('admin', 'admin', 'Administrador Golocentro');
