@@ -46,10 +46,8 @@ public class MarcoPrincipalView extends JFrame {
 
         JMenu menuArchivo = construirMenu("Archivo");
         JMenuItem itemInicio = construirItem("Inicio");
-        JMenuItem itemCambiarContraseña = construirItem("Cambiar contraseña");
         JMenuItem itemSalir = construirItem("Salir");
         menuArchivo.add(itemInicio);
-        menuArchivo.add(itemCambiarContraseña);
         menuArchivo.add(itemSalir);
 
         JMenu menuProductos = construirMenu("Productos");
@@ -109,7 +107,6 @@ public class MarcoPrincipalView extends JFrame {
         itemProveedores.addActionListener(e -> new ProveedorListarView().setVisible(true));
         itemStock.addActionListener(e -> new ProductoListarView().setVisible(true));
         itemMovimiento.addActionListener(e -> new MovimientosView().setVisible(true));
-        itemCambiarContraseña.addActionListener(e -> new ActualizarcontraseñaView().setVisible(true));
         itemGenerarVenta.addActionListener(e -> new VentasView().setVisible(true));
         itemHistorialVentas.addActionListener(e -> new HistorialVentasView().setVisible(true));
         itemAcercaDe.addActionListener(e -> JOptionPane.showMessageDialog(this,

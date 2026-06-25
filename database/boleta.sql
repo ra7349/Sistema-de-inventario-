@@ -11,7 +11,6 @@ DROP TABLE IF EXISTS categoria CASCADE;
 DROP TABLE IF EXISTS cliente CASCADE;
 DROP TABLE IF EXISTS tipo_cliente CASCADE;
 DROP TABLE IF EXISTS proveedor CASCADE;
-DROP TABLE IF EXISTS usuario CASCADE;
 
 CREATE TABLE tipo_cliente (
     id_tipo_cliente SERIAL PRIMARY KEY,
@@ -113,13 +112,6 @@ CREATE TABLE detalle_ventas (
     importe NUMERIC(10,2) NOT NULL
 );
 
-CREATE TABLE usuario (
-    id_usuario SERIAL PRIMARY KEY,
-    usuario VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(120) NOT NULL,
-    nombre VARCHAR(100),
-    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
-);
 
 CREATE INDEX idx_producto_categoria ON producto(categoria);
 CREATE INDEX idx_movimiento_producto ON movimiento_inventario(id_producto);
@@ -179,5 +171,3 @@ INSERT INTO detalle_ventas (id_venta, id_producto, descripcion, cantidad, precio
 (2, 2, 'PROD002 - Chocolate clásico', 1, 36.00, 36.00),
 (2, 3, 'PROD003 - Galletas vainilla', 1, 18.50, 18.50);
 
-INSERT INTO usuario (usuario, password, nombre) VALUES
-('admin', 'admin', 'Administrador Golocentro');
