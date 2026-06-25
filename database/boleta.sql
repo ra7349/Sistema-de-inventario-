@@ -1,5 +1,5 @@
 -- Base de datos Proyecto - Sistema de Inventario
--- Script adaptado a las entidades y modelos Java del proyecto Kardex.
+-- Script adaptado a las entidades y modelos Java del Sistema de Inventario Golocentro.
 -- Incluye datos de prueba para trabajar con clientes, proveedores, productos,
 -- movimientos, ventas, detalles y precios por tipo de cliente.
 

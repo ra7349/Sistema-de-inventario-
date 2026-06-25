@@ -4,11 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.Kardex</groupId>
-  <artifactId>Golocentro</artifactId>
+  <groupId>org.golocentro</groupId>
+  <artifactId>golocentro</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
   <name>Sistema de Inventario Golocentro</name>
+  <description>Sistema de inventario para la gestión de productos, clientes, proveedores, ventas y movimientos de stock de Golocentro.</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -66,7 +67,7 @@
           <configuration>
             <archive>
               <manifest>
-                <mainClass>org.Kardex.jF.App</mainClass>
+                <mainClass>org.golocentro.App</mainClass>
               </manifest>
             </archive>
           </configuration>
