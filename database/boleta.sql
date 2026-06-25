@@ -11,6 +11,19 @@ CREATE TABLE IF NOT EXISTS cliente (
 );
 
 
+
+CREATE TABLE IF NOT EXISTS proveedor (
+    id_proveedor SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    razon_social VARCHAR(150) NOT NULL,
+    ruc BIGINT NOT NULL,
+    telefono BIGINT,
+    correo VARCHAR(100),
+    direccion VARCHAR(200),
+    contacto VARCHAR(120),
+    estado VARCHAR(20) NOT NULL DEFAULT 'Activo'
+);
+
 CREATE TABLE IF NOT EXISTS categoria (
     id_categoria SERIAL PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE,
