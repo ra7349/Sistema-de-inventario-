@@ -16,16 +16,16 @@ public class MarcoPrincipalView extends JFrame {
     private static final Color COLOR_ACENTO_SUAVE       = new Color(96, 165, 250);
     private static final Color COLOR_TEXTO              = Color.WHITE;
     private static final Color COLOR_TEXTO_SUAVE        = new Color(148, 163, 184); 
-    private JLabel lblEquiposReparacion;
-    private JLabel lblEquiposEntregados;
-    private JLabel lblServiciosMes;
+    private JLabel lblProductosBajoStock;
+    private JLabel lblVentasRegistradas;
+    private JLabel lblMovimientosMes;
     private JLabel lblClientesRegistrados;
     private JLabel lblIngresosMes;
     private final IndicadoresUsecase indicadoresUsecase;
 
     public MarcoPrincipalView() {
         this.indicadoresUsecase = new IndicadoresModel();
-        setTitle("JF Technology & Services — Sistema de Soporte Técnico");
+        setTitle("Golocentro — Sistema de Inventario");
         setSize(1050, 680);
         setMinimumSize(new Dimension(900, 600));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,95 +45,77 @@ public class MarcoPrincipalView extends JFrame {
         barra.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, COLOR_ACENTO));
 
         JMenu menuArchivo = construirMenu("Archivo");
-
         JMenuItem itemInicio = construirItem("Inicio");
-        JMenuItem itemCambiarContraseña = construirItem("Cambiar Contraseña");
+        JMenuItem itemCambiarContraseña = construirItem("Cambiar contraseña");
         JMenuItem itemSalir = construirItem("Salir");
-
         menuArchivo.add(itemInicio);
         menuArchivo.add(itemCambiarContraseña);
         menuArchivo.add(itemSalir);
 
-        
+        JMenu menuProductos = construirMenu("Productos");
+        JMenuItem itemRegistrarProducto = construirItem("Registrar producto");
+        JMenuItem itemListarProductos = construirItem("Listar productos");
+        menuProductos.add(itemRegistrarProducto);
+        menuProductos.add(itemListarProductos);
+
+        JMenu menuCategorias = construirMenu("Categorías");
+        JMenuItem itemGestionarCategorias = construirItem("Gestionar categorías");
+        menuCategorias.add(itemGestionarCategorias);
+
         JMenu menuClientes = construirMenu("Clientes");
-        JMenuItem itemRegistrarCliente = construirItem("Registrar Cliente");
-        JMenuItem itemModificarCliente = construirItem("Modificar Cliente");
-        JMenuItem itemListarClientes   = construirItem("Listar Clientes");
+        JMenuItem itemRegistrarCliente = construirItem("Registrar cliente");
+        JMenuItem itemModificarCliente = construirItem("Modificar cliente");
+        JMenuItem itemListarClientes = construirItem("Listar clientes");
         menuClientes.add(itemRegistrarCliente);
         menuClientes.add(itemModificarCliente);
         menuClientes.add(itemListarClientes);
 
-        JMenu menuEquipos = construirMenu("Equipos");
-        JMenuItem itemRegistrarEquipo = construirItem("Registrar Equipo");
-        JMenuItem itemListarEquipos   = construirItem("Listar Equipos");
-        menuEquipos.add(itemRegistrarEquipo);
-        menuEquipos.add(itemListarEquipos);
-
-        JMenu menuServicios = construirMenu("Servicios");
-        JMenuItem itemGestionarServicio = construirItem("Gestionar servicios");
-        menuServicios.add(itemGestionarServicio);
-        
-        JMenu menuOrdenes = construirMenu("Órdenes de Servicio");
-        JMenuItem itemNuevaOrden       = construirItem("Gestion de ordenes");
-        JMenuItem itemConsultaOrdenes  = construirItem("Consulta de Órdenes");
-        menuOrdenes.add(itemNuevaOrden);
-        menuOrdenes.add(itemConsultaOrdenes);
-
+        JMenu menuProveedores = construirMenu("Proveedores");
+        JMenuItem itemProveedores = construirItem("Directorio de proveedores");
+        menuProveedores.add(itemProveedores);
 
         JMenu menuInventario = construirMenu("Inventario");
-        JMenuItem itemRepuestos    = construirItem("Repuestos");
-        JMenuItem itemMovimiento     = construirItem("Movimientos");
-        menuInventario.add(itemRepuestos);
+        JMenuItem itemStock = construirItem("Stock de productos");
+        JMenuItem itemMovimiento = construirItem("Entradas y salidas");
+        menuInventario.add(itemStock);
         menuInventario.add(itemMovimiento);
 
-        JMenu menuFacturacion = construirMenu("Facturación");
-        JMenuItem itemGenerarBoleta = construirItem("Generar Boleta");
-        JMenuItem itemHistorialVentas = construirItem("Historial de Ventas");
-        menuFacturacion.add(itemGenerarBoleta);
-        menuFacturacion.add(itemHistorialVentas);
+        JMenu menuVentas = construirMenu("Ventas");
+        JMenuItem itemGenerarVenta = construirItem("Registrar venta");
+        JMenuItem itemHistorialVentas = construirItem("Historial de ventas");
+        menuVentas.add(itemGenerarVenta);
+        menuVentas.add(itemHistorialVentas);
 
-        JMenu menuAyuda = construirMenu("Ayuda");
-        JMenuItem itemAcercaDe = construirItem("Acerca del Sistema");
-        menuAyuda.add(itemAcercaDe);
-        menuAyuda.addSeparator();
-
+        JMenu menuReportes = construirMenu("Reportes");
+        JMenuItem itemAcercaDe = construirItem("Acerca de Golocentro");
+        menuReportes.add(itemAcercaDe);
 
         barra.add(menuArchivo);
+        barra.add(menuProductos);
+        barra.add(menuCategorias);
         barra.add(menuClientes);
-        barra.add(menuEquipos);
-        barra.add(menuServicios);
-        barra.add(menuOrdenes);
+        barra.add(menuProveedores);
         barra.add(menuInventario);
-        barra.add(menuFacturacion);
-        barra.add(menuAyuda);
+        barra.add(menuVentas);
+        barra.add(menuReportes);
 
-        // ── Acciones (sin cambios respecto a la lógica original) ──
         itemInicio.addActionListener(e -> cargarIndicadores());
+        itemRegistrarProducto.addActionListener(e -> new FormularioProducto(this).setVisible(true));
+        itemListarProductos.addActionListener(e -> new ProductoListarView().setVisible(true));
+        itemGestionarCategorias.addActionListener(e -> new GestionServicioView().setVisible(true));
         itemRegistrarCliente.addActionListener(e -> new FormularioCliente(this).setVisible(true));
         itemModificarCliente.addActionListener(e -> new ModificarClienteView(this).setVisible(true));
-        itemListarClientes  .addActionListener(e -> new ClienteListarView().setVisible(true));
-
-        itemRegistrarEquipo.addActionListener(e -> new FormularioEquipo(this).setVisible(true));
-        itemListarEquipos  .addActionListener(e -> new EquipoListarView().setVisible(true));
-
-        itemCambiarContraseña.addActionListener(e -> new ActualizarcontraseñaView().setVisible(true));
-        itemGestionarServicio.addActionListener(e -> new GestionServicioView().setVisible(true));
-
-        itemNuevaOrden.addActionListener(e -> new NuevaOrdenView().setVisible(true));
-        itemConsultaOrdenes.addActionListener(e -> new ConsultaView().setVisible(true));
-        
-        itemRepuestos.addActionListener(e -> new RepuestosView().setVisible(true));
+        itemListarClientes.addActionListener(e -> new ClienteListarView().setVisible(true));
+        itemProveedores.addActionListener(e -> JOptionPane.showMessageDialog(this, "Módulo de proveedores preparado para registrar abastecedores de golosinas y bebidas."));
+        itemStock.addActionListener(e -> new RepuestosView().setVisible(true));
         itemMovimiento.addActionListener(e -> new MovimientosView().setVisible(true));
-        
-        itemGenerarBoleta.addActionListener(e -> new GenerarBoletaView().setVisible(true));
+        itemCambiarContraseña.addActionListener(e -> new ActualizarcontraseñaView().setVisible(true));
+        itemGenerarVenta.addActionListener(e -> new GenerarBoletaView().setVisible(true));
         itemHistorialVentas.addActionListener(e -> new HistorialVentasView().setVisible(true));
-        
-        
         itemAcercaDe.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "JF Technology & Services\nSistema de Soporte Técnico v1.0\n2026",
+                "Golocentro\nSistema de Inventario para distribución mayorista y minorista v1.0\n2026",
                 "Acerca de", JOptionPane.INFORMATION_MESSAGE));
         itemSalir.addActionListener(e -> System.exit(0));
-
         return barra;
     }
 
@@ -172,12 +154,12 @@ public class MarcoPrincipalView extends JFrame {
         panelPresentacion.setOpaque(false);
         panelPresentacion.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
 
-        JLabel lblTitulo = new JLabel("JF Technology & Services");
+        JLabel lblTitulo = new JLabel("Golocentro");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 34));
         lblTitulo.setForeground(COLOR_TEXTO);
         lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lblSub = new JLabel("Sistema de Gestión para Soporte Técnico");
+        JLabel lblSub = new JLabel("Sistema de Inventario de golosinas y bebidas");
         lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         lblSub.setForeground(COLOR_ACENTO_SUAVE);
         lblSub.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -218,15 +200,15 @@ public class MarcoPrincipalView extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         panel.setPreferredSize(new Dimension(290, 0));
 
-        lblEquiposReparacion   = new JLabel("--", SwingConstants.CENTER);
-        lblEquiposEntregados   = new JLabel("--", SwingConstants.CENTER);
-        lblServiciosMes        = new JLabel("--", SwingConstants.CENTER);
+        lblProductosBajoStock   = new JLabel("--", SwingConstants.CENTER);
+        lblVentasRegistradas   = new JLabel("--", SwingConstants.CENTER);
+        lblMovimientosMes        = new JLabel("--", SwingConstants.CENTER);
         lblClientesRegistrados = new JLabel("--", SwingConstants.CENTER);
         lblIngresosMes         = new JLabel("--", SwingConstants.CENTER);
 
-        panel.add(construirIndicador("🛠", "Equipos en reparación", lblEquiposReparacion, COLOR_ACENTO));
-        panel.add(construirIndicador("✅", "Equipos entregados", lblEquiposEntregados, new Color(34, 197, 94)));
-        panel.add(construirIndicador("📋", "Servicios este mes", lblServiciosMes, new Color(168, 85, 247)));
+        panel.add(construirIndicador("📦", "Productos con bajo stock", lblProductosBajoStock, COLOR_ACENTO));
+        panel.add(construirIndicador("🧾", "Ventas registradas", lblVentasRegistradas, new Color(34, 197, 94)));
+        panel.add(construirIndicador("🔁", "Movimientos este mes", lblMovimientosMes, new Color(168, 85, 247)));
         panel.add(construirIndicador("👥", "Clientes registrados", lblClientesRegistrados, new Color(234, 179, 8)));
         panel.add(construirIndicador("💰", "Ingresos del mes", lblIngresosMes, new Color(16, 185, 129)));
 
@@ -268,9 +250,9 @@ public class MarcoPrincipalView extends JFrame {
         try {
             Indicadores indicadores = indicadoresUsecase.obtenerIndicadores();
 
-            lblEquiposReparacion.setText(String.valueOf(indicadores.getEquiposEnReparacion()));
-            lblEquiposEntregados.setText(String.valueOf(indicadores.getEquiposEntregados()));
-            lblServiciosMes.setText(String.valueOf(indicadores.getServiciosEsteMes()));
+            lblProductosBajoStock.setText(String.valueOf(indicadores.getProductosBajoStock()));
+            lblVentasRegistradas.setText(String.valueOf(indicadores.getVentasRegistradas()));
+            lblMovimientosMes.setText(String.valueOf(indicadores.getMovimientosEsteMes()));
             lblClientesRegistrados.setText(String.valueOf(indicadores.getClientesRegistrados()));
             lblIngresosMes.setText(String.format("S/ %,.2f", indicadores.getIngresosDelMes()));
         } catch (Exception ex) {

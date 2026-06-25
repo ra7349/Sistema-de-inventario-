@@ -14,7 +14,7 @@ public class ProductoListarView extends JFrame {
     private ProductoModel dao = new ProductoModel();
 
     public ProductoListarView() {
-        setTitle("Inventario de Productos / Repuestos");
+        setTitle("Inventario de productos Golocentro");
         setSize(900, 420);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

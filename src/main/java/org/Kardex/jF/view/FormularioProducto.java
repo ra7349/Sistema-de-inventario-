@@ -15,12 +15,12 @@ public class FormularioProducto extends JDialog {
     private JTextField txtPrecio      = new JTextField("0.00");
     private JTextField txtStock       = new JTextField("0");
     private JComboBox<String> cbCategoria = new JComboBox<>(
-        new String[]{"Repuesto","Insumo","Accesorio"});
+        new String[]{"Golosinas", "Bebidas", "Caramelos", "Chocolates", "Galletas", "Snacks", "Gomitas"});
 
     private final ProductoModel dao = new ProductoModel();
 
     public FormularioProducto(JFrame parent) {
-        super(parent, "Registrar Producto / Repuesto", true);
+        super(parent, "Registrar producto Golocentro", true);
         setSize(420, 340);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
